@@ -1,45 +1,32 @@
 <template>
-  <v-app>
-    <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+  <v-main>
+    <router-view />
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
+    <v-app>
+      <v-snackbar
+        v-model="snackbar.activo"
+        :timeout="-1"
+        :color="snackbar.color"
       >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-  </v-app>
+        {{ snackbar.mensaje }}
+        <v-btn text @click="snackbar.activo = false">
+          Aceptar
+        </v-btn>
+      </v-snackbar>
+    </v-app>
+  </v-main>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "App",
   data: () => ({
     // Hola mundo
-  })
+  }),
+  computed: {
+    ...mapState(["snackbar"])
+  }
 };
 </script>
