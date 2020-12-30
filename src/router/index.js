@@ -36,13 +36,30 @@ const routes = [
       {
         path: "/consulta-coordinadores",
         name: "ConsultaCoordinadores",
-        meta: { requiresAdminAccess: true },
         component: () =>
           import(
-            /* webpackChunkName: "consulta-coordinador" */ "../views/ConsultaCoordinador.vue"
+            /* webpackChunkName: "consulta-coordinador" */ "../views/views-administrador/ConsultaCoordinador.vue"
           ),
         beforeEnter: (to, from, next) => {
-          if (rol() == "ADMINISTRADOR") {
+          if (rol() === "ADMINISTRADOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
+        path: "/registrar-coordinador",
+        name: "RegistrarCoordinador",
+        component: () =>
+          import(
+            /* webpackChunkName: "registrar-coordinador" */ "../views/views-administrador/RegistrarCoordinador.vue"
+          ),
+        beforeEach: (to, from, next) => {
+          if (rol() === "ADMINISTRADOR") {
             next();
           } else {
             next({
@@ -55,14 +72,13 @@ const routes = [
       {
         path: "/consulta-proyectos",
         name: "ConsultaProyectos",
-        meta: { requiresCoordAccess: true },
         component: () =>
           import(
             /* webpackChunkName: "consulta-proyectos" */ "../views/ConsultaProyectos.vue"
           ),
         beforeEnter: (to, from, next) => {
           console.log("ENTRO BEFORE ENTER CON :", rol());
-          if (rol() == "COORDINADOR") {
+          if (rol() === "COORDINADOR") {
             next();
           } else {
             next({

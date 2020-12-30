@@ -1,4 +1,4 @@
-import Usuario from "../api/Usuario";
+import Api from "../api/Usuario";
 import { mapActions } from "vuex";
 
 export default {
@@ -25,7 +25,7 @@ export default {
     login() {
       if (this.$refs.formularioCredenciales.validate()) {
         this.esperandoRespuesta = true;
-        Usuario.login(this.formCredenciales)
+        Api.login(this.formCredenciales)
           .then(response => {
             localStorage.setItem("auth", "true");
             localStorage.setItem("rol", response.data.rol_usuario);

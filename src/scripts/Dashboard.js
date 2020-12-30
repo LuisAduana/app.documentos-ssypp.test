@@ -1,4 +1,4 @@
-import Usuario from "../api/Usuario";
+import Api from "../api/Usuario";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
@@ -21,7 +21,7 @@ export default {
     ...mapActions(["saveAuth"]),
 
     logout() {
-      Usuario.logout().then(() => {
+      Api.logout().then(() => {
         localStorage.removeItem("auth");
         localStorage.removeItem("rol");
         this.$router.push({ name: "Login" });
@@ -32,7 +32,7 @@ export default {
     ...mapGetters(["getUsuario"])
   },
   mounted() {
-    Usuario.auth()
+    Api.auth()
       .then(response => {
         this.$store.dispatch("saveUsuario", response.data);
       })
