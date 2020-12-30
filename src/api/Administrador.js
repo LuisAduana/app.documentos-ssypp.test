@@ -9,5 +9,12 @@ export default {
   async registrarCoordinador(formulario) {
     await Csrf.getCookie();
     return Api.post("/administrador/registrar-coordinador", formulario);
+  },
+  async actDesactCoordinador(formulario) {
+    await Csrf.getCookie();
+    return Api.post(
+      "/administrador/activar-desactivar-coordinador",
+      formulario
+    );
   }
 };
