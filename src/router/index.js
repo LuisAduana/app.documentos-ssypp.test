@@ -70,6 +70,25 @@ const routes = [
         }
       },
       {
+        path: "/modificar-coordinador",
+        name: "ModificarCoordinador",
+        component: () =>
+          import(
+            /* webpackChunkName: "registrar-coordinador" */ "../views/views-administrador/ModificarCoordinador.vue"
+          ),
+        props: true,
+        beforeEach: (to, from, next) => {
+          if (rol() === "ADMINISTRADOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
         path: "/consulta-proyectos",
         name: "ConsultaProyectos",
         component: () =>

@@ -1,10 +1,10 @@
-import { mapActions } from "vuex";
 import Api from "../../api/Administrador";
+import { mapActions } from "vuex";
 
 export default {
   data: () => ({
     dialogoConfirmarActDesactivar: false,
-    esperandoTabla: true,
+    esperandoTabla: false,
     esperandoRespuestaActDesact: false,
     coordinadores: [],
     coordinadorEdit: {},
@@ -26,7 +26,10 @@ export default {
       this.$router.push({ name: "RegistrarCoordinador" });
     },
     editarCoordinador(coordinador) {
-      console.log("EDITAR", coordinador);
+      this.$router.push({
+        name: "ModificarCoordinador",
+        params: { coordinador: coordinador }
+      });
     },
     desactivarActivarCoordinador(coordinador) {
       this.coordinadorEdit = Object.assign({}, coordinador);
@@ -72,6 +75,7 @@ export default {
     }
   },
   mounted() {
+    this.esperandoTabla = true;
     Api.obtenerCoordinadores()
       .then(response => {
         this.coordinadores = response.data;
