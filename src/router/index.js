@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+// import Store from "./../store/index";
 
 Vue.use(VueRouter);
 
@@ -8,6 +9,7 @@ function auth() {
 }
 
 function rol() {
+  // return Store.state.usuario.rol_usuario;
   return localStorage.getItem("rol");
 }
 
@@ -114,6 +116,7 @@ const routes = [
             /* webpackChunkName: "consulta-dependencias" */ "../views/views-coordinador/ConsultaDependencia.vue"
           ),
         beforeEach: (to, from, next) => {
+          console.log("ENTRO EN EL BEFORE COMO: ", rol());
           if (rol() === "COORDINADOR") {
             next();
           } else {
@@ -131,6 +134,25 @@ const routes = [
           import(
             /* webpackChunkName: "registrar-dependencia" */ "../views/views-coordinador/RegistrarDependencia.vue"
           ),
+        beforeEach: (to, from, next) => {
+          if (rol() === "COORDINADOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
+        path: "/modificar-dependencia",
+        name: "ModificarDependencia",
+        component: () =>
+          import(
+            /* webpackChunkName: "modificar-dependencia" */ "../views/views-coordinador/ModificarDependencia.vue"
+          ),
+        props: true,
         beforeEach: (to, from, next) => {
           if (rol() === "COORDINADOR") {
             next();

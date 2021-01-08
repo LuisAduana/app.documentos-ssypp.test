@@ -9,5 +9,9 @@ export default {
   async registrarDependencia(formulario) {
     await Csrf.getCookie();
     return Api.post("/coordinador/registrar-dependencia", formulario);
+  },
+  async actDesactDependencia(formulario) {
+    await Csrf.getCookie();
+    return Api.put("/coordinador/activar-desactivar-dependencia", formulario);
   }
 };

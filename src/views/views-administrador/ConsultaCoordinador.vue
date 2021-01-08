@@ -44,7 +44,7 @@
                 <v-card-actions>
                   <v-col align="right">
                     <v-btn color="gray darken-1" text @click="cerrarDialogo()">
-                      Cancel
+                      Cancelar
                     </v-btn>
                     <v-btn
                       color="blue darken-1"
@@ -52,7 +52,7 @@
                       :loading="esperandoRespuestaActDesact"
                       @click="activarDesactivarConfirmacion()"
                     >
-                      OK
+                      Aceptar
                     </v-btn>
                   </v-col>
                 </v-card-actions>
