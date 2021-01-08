@@ -1,6 +1,12 @@
 <template>
   <v-app>
-    <v-navigation-drawer app v-model="drawer" temporary color="secundary">
+    <v-navigation-drawer
+      app
+      v-model="drawer"
+      temporary
+      color="secundary"
+      v-if="getUsuario"
+    >
       <div v-if="getUsuario.usuario.rol_usuario === 'ADMINISTRADOR'">
         <v-list-item>
           <v-list-item-icon>
@@ -73,7 +79,9 @@
 
     <v-app-bar app color="primary" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title> Hola {{ getUsuario.usuario.nombres }} </v-toolbar-title>
+      <v-toolbar-title v-if="getUsuario">
+        Hola {{ getUsuario.usuario.nombres }}
+      </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn href="#" @click.prevent="logout()" target="_blank" text>
         <span class="mr-2">Cerrar sesión</span>

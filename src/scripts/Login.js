@@ -27,10 +27,14 @@ export default {
         this.esperandoRespuesta = true;
         Api.login(this.formCredenciales)
           .then(response => {
-            localStorage.setItem("auth", "true");
-            localStorage.setItem("rol", response.data.rol_usuario);
             this.esperandoRespuesta = false;
-            this.$router.push({ name: "Dashboard" });
+            if (response.data.estado === "ACTIVO") {
+              localStorage.setItem("auth", "true");
+              localStorage.setItem("rol", response.data.rol_usuario);
+              this.$router.push({ name: "Dashboard" });
+            } else {
+              this.snackBarError("Tu usuario está desactivado");
+            }
           })
           .catch(error => {
             this.esperandoRespuesta = false;

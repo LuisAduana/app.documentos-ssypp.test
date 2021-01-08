@@ -13,6 +13,11 @@ export default {
       }
     ],
     menuCoordinador: [
+      {
+        text: "Dependencias",
+        icon: "mdi-office-building-outline",
+        ruta: "/consulta-dependencias"
+      },
       { text: "Proyectos", icon: "mdi-account", ruta: "/consulta-proyectos" },
       { text: "Documentos", icon: "mdi-flag", ruta: "/consulta-documentos" }
     ]

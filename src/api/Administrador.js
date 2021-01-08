@@ -16,9 +16,6 @@ export default {
   },
   async actDesactCoordinador(formulario) {
     await Csrf.getCookie();
-    return Api.post(
-      "/administrador/activar-desactivar-coordinador",
-      formulario
-    );
+    return Api.put("/administrador/activar-desactivar-coordinador", formulario);
   }
 };

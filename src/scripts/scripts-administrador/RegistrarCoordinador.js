@@ -1,4 +1,4 @@
-import Api from "./../../api/Administrador";
+import Administrador from "./../../api/Administrador";
 import { mapActions } from "vuex";
 
 export default {
@@ -33,7 +33,7 @@ export default {
     ],
     correoRules: [
       v => !!v || "Correo requerido",
-      v => /.+@.+\..+/.test(v) || "El correo debe ser válido",
+      v => /.+@.+\..+/.test(v) || "El correo no es válido",
       v => (v && v.length <= 150) || "El correo es demasiado largo"
     ],
     passwordRules: [
@@ -58,7 +58,7 @@ export default {
     registrarCoordinador() {
       if (this.$refs.formularioCoordinador.validate()) {
         this.esperandoRespuesta = true;
-        Api.registrarCoordinador(this.formCoordinador)
+        Administrador.registrarCoordinador(this.formCoordinador)
           .then(() => {
             this.esperandoRespuesta = false;
             this.$refs.formularioCoordinador.reset();
@@ -70,7 +70,13 @@ export default {
               if (Object.keys(error.response.data.errors).length === 2) {
                 this.snackBarError(error.response.data.errors.correo[0]);
               } else {
-                this.snackBarError(error.response.data.errors.num_personal[0]);
+                if (error.response.data.errors.correo == null) {
+                  this.snackBarError(
+                    error.response.data.errors.num_personal[0]
+                  );
+                } else {
+                  this.snackBarError(error.response.data.errors.correo[0]);
+                }
               }
             } else {
               this.snackBarError("Error en el registro");

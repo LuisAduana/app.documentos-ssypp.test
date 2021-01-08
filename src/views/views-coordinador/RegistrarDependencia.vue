@@ -12,30 +12,22 @@
           </v-row>
           <v-row>
             <v-col align="center">
-              <h1>Registrar Coordinador</h1>
+              <h1>Registrar Dependencia</h1>
             </v-col>
           </v-row>
           <v-row>
             <v-col align="center">
               <v-form
-                ref="formularioCoordinador"
+                ref="formularioDependencia"
                 v-model="validacion"
                 lazy-validation
               >
                 <v-row>
-                  <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
+                  <v-col cols="12">
                     <v-text-field
-                      v-model="formCoordinador.apellido_paterno"
-                      :rules="apellido_paternoRules"
-                      label="Apellido paterno *"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col>
-                    <v-text-field
-                      v-model="formCoordinador.apellido_materno"
-                      :rules="apellido_maternoRules"
-                      label="Apellido materno *"
+                      v-model="formDependencia.nombre_dependencia"
+                      :rules="nombre_dependenciaRules"
+                      label="Nombre de la dependencia *"
                       required
                     ></v-text-field>
                   </v-col>
@@ -43,15 +35,33 @@
                 <v-row>
                   <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
                     <v-text-field
-                      v-model="formCoordinador.nombres"
-                      :rules="nombresRules"
-                      label="Nombre(s) *"
+                      v-model="formDependencia.direccion"
+                      :rules="direccionRules"
+                      label="Direccion *"
                       required
                     ></v-text-field>
                   </v-col>
                   <v-col>
                     <v-text-field
-                      v-model="formCoordinador.correo"
+                      v-model="formDependencia.ciudad"
+                      :rules="ciudadRules"
+                      label="Ciudad *"
+                      required
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
+                    <v-text-field
+                      v-model="formDependencia.nombre_contacto"
+                      :rules="nombre_contactoRules"
+                      label="Nombre de contacto *"
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  <v-col>
+                    <v-text-field
+                      v-model="formDependencia.correo"
                       :rules="correoRules"
                       label="Correo electrónico *"
                       required
@@ -61,31 +71,17 @@
                 <v-row>
                   <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
                     <v-text-field
-                      v-model="formCoordinador.password"
-                      :append-icon="mostrarPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                      :rules="passwordRules"
-                      :type="mostrarPassword ? 'text' : 'password'"
-                      @click:append="mostrarPassword = !mostrarPassword"
-                      label="Contraseña *"
+                      v-model="formDependencia.num_contacto"
+                      :rules="num_contactoRules"
+                      label="No. de contacto *"
                       required
                     ></v-text-field>
                   </v-col>
                   <v-col>
                     <v-text-field
-                      v-model="password_confirmacion"
-                      :append-icon="
-                        mostrarConfirmacionPassword ? 'mdi-eye' : 'mdi-eye-off'
-                      "
-                      :rules="[
-                        v => !!v || 'Confirme su contraseña',
-                        this.formCoordinador.password ===
-                          this.password_confirmacion || 'Contraseña no coincide'
-                      ]"
-                      :type="mostrarConfirmacionPassword ? 'text' : 'password'"
-                      @click:append="
-                        mostrarConfirmacionPassword = !mostrarConfirmacionPassword
-                      "
-                      label="Confirmar contraseña *"
+                      v-model="formDependencia.sector"
+                      :rules="sectorRules"
+                      label="Sector de la dependencia *"
                       required
                     ></v-text-field>
                   </v-col>
@@ -93,18 +89,17 @@
                 <v-row>
                   <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
                     <v-text-field
-                      v-model="formCoordinador.num_personal"
-                      :rules="num_personalRules"
-                      :counter="10"
-                      label="No. Personal *"
+                      v-model="formDependencia.num_us_directos"
+                      :rules="num_usRules"
+                      label="No. usuarios directos *"
                       required
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
+                  <v-col>
                     <v-text-field
-                      v-model="formCoordinador.num_contacto"
-                      :rules="num_contactoRules"
-                      label="Número de contacto *"
+                      v-model="formDependencia.num_us_indirectos"
+                      :rules="num_usRules"
+                      label="No. usuarios indirectos *"
                       required
                     ></v-text-field>
                   </v-col>
@@ -115,7 +110,7 @@
                       :disabled="!validacion"
                       :loading="esperandoRespuesta"
                       color="success"
-                      @click.prevent="registrarCoordinador()"
+                      @click.prevent="registrarDependencia()"
                     >
                       Registrar
                     </v-btn>
@@ -130,4 +125,4 @@
   </v-container>
 </template>
 
-<script src="./../../scripts/scripts-administrador/RegistrarCoordinador.js"></script>
+<script src="./../../scripts/scripts-coordinador/RegistrarDependencia.js"></script>

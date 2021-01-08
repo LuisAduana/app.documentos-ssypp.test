@@ -1,4 +1,4 @@
-import Api from "../../api/Administrador";
+import Administrador from "../../api/Administrador";
 import { mapActions } from "vuex";
 
 export default {
@@ -6,6 +6,7 @@ export default {
     dialogoConfirmarActDesactivar: false,
     esperandoTabla: false,
     esperandoRespuestaActDesact: false,
+    busqueda: "",
     coordinadores: [],
     coordinadorEdit: {},
     cabeceras: [
@@ -44,7 +45,7 @@ export default {
           this.coordinadorEdit.estado === "ACTIVO" ? "DESACTIVADO" : "ACTIVO",
         correo: this.coordinadorEdit.correo
       };
-      Api.actDesactCoordinador(datos)
+      Administrador.actDesactCoordinador(datos)
         .then(() => {
           for (var i = 0; i < this.coordinadores.length; i++) {
             if (this.coordinadores[i].correo === this.coordinadorEdit.correo) {
@@ -76,7 +77,7 @@ export default {
   },
   mounted() {
     this.esperandoTabla = true;
-    Api.obtenerCoordinadores()
+    Administrador.obtenerCoordinadores()
       .then(response => {
         this.coordinadores = response.data;
         this.esperandoTabla = false;

@@ -1,22 +1,26 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col>
-        <h1>Coordinadores registrados</h1>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col align="right">
-        <v-btn color="success" @click.prevent="registrarCoordinador()">
-          Nuevo
-        </v-btn>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
+    <v-col align="center">
+      <v-card>
+        <v-card-title>
+          <h2>Coordinadores registrados</h2>
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="busqueda"
+            append-icon="mdi-magnify"
+            label="Buscar"
+            single-line
+            hide-details
+          ></v-text-field>
+          <v-spacer></v-spacer>
+          <v-btn color="success" @click.prevent="registrarCoordinador()">
+            Nuevo
+          </v-btn>
+        </v-card-title>
         <v-data-table
           :headers="cabeceras"
           :items="coordinadores"
+          :search="busqueda"
           :items-per-page="10"
           :loading="esperandoTabla"
           sort-by="apellido_paterno"
@@ -24,6 +28,8 @@
           class="elevation-1"
           :footer-props="{ 'items-per-page-text': 'coordinadores por pág.' }"
         >
+          <template v-slot:no-data>No existen registros</template>
+          <template v-slot:no-results>No se encontraron coincidencias</template>
           <template v-slot:top>
             <v-dialog
               v-model="dialogoConfirmarActDesactivar"
@@ -62,8 +68,8 @@
             </v-icon>
           </template>
         </v-data-table>
-      </v-col>
-    </v-row>
+      </v-card>
+    </v-col>
   </v-container>
 </template>
 

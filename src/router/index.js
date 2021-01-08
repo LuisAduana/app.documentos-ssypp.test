@@ -96,7 +96,42 @@ const routes = [
             /* webpackChunkName: "consulta-proyectos" */ "../views/ConsultaProyectos.vue"
           ),
         beforeEnter: (to, from, next) => {
-          console.log("ENTRO BEFORE ENTER CON :", rol());
+          if (rol() === "COORDINADOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
+        path: "/consulta-dependencias",
+        name: "ConsultaDependencias",
+        component: () =>
+          import(
+            /* webpackChunkName: "consulta-dependencias" */ "../views/views-coordinador/ConsultaDependencia.vue"
+          ),
+        beforeEach: (to, from, next) => {
+          if (rol() === "COORDINADOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
+        path: "/registrar-dependencia",
+        name: "RegistrarDependencia",
+        component: () =>
+          import(
+            /* webpackChunkName: "registrar-dependencia" */ "../views/views-coordinador/RegistrarDependencia.vue"
+          ),
+        beforeEach: (to, from, next) => {
           if (rol() === "COORDINADOR") {
             next();
           } else {

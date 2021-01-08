@@ -62,10 +62,16 @@ export default {
               if (Object.keys(error.response.data.errors).length === 2) {
                 this.snackBarError(error.response.data.errors.correo[0]);
               } else {
-                this.snackBarError(error.response.data.errors.num_personal[0]);
+                if (error.response.data.errors.correo == null) {
+                  this.snackBarError(
+                    error.response.data.errors.num_personal[0]
+                  );
+                } else {
+                  this.snackBarError(error.response.data.errors.correo[0]);
+                }
               }
             } else {
-              this.snackBarError("Ha ocurrido un error, inténtelo nuevamente.");
+              this.snackBarError("Error en la modificación");
             }
           });
       }
