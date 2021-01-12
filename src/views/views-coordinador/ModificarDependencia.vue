@@ -112,7 +112,7 @@
                       color="success"
                       @click.prevent="modificarDependencia()"
                     >
-                      Registrar
+                      Modificar
                     </v-btn>
                   </v-col>
                 </v-row>

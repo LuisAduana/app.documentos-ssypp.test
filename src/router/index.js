@@ -1,6 +1,5 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-// import Store from "./../store/index";
 
 Vue.use(VueRouter);
 
@@ -9,7 +8,6 @@ function auth() {
 }
 
 function rol() {
-  // return Store.state.usuario.rol_usuario;
   return localStorage.getItem("rol");
 }
 
@@ -60,7 +58,7 @@ const routes = [
           import(
             /* webpackChunkName: "registrar-coordinador" */ "../views/views-administrador/RegistrarCoordinador.vue"
           ),
-        beforeEach: (to, from, next) => {
+        beforeEnter: (to, from, next) => {
           if (rol() === "ADMINISTRADOR") {
             next();
           } else {
@@ -79,7 +77,7 @@ const routes = [
             /* webpackChunkName: "registrar-coordinador" */ "../views/views-administrador/ModificarCoordinador.vue"
           ),
         props: true,
-        beforeEach: (to, from, next) => {
+        beforeEnter: (to, from, next) => {
           if (rol() === "ADMINISTRADOR") {
             next();
           } else {
@@ -115,7 +113,7 @@ const routes = [
           import(
             /* webpackChunkName: "consulta-dependencias" */ "../views/views-coordinador/ConsultaDependencia.vue"
           ),
-        beforeEach: (to, from, next) => {
+        beforeEnter: (to, from, next) => {
           console.log("ENTRO EN EL BEFORE COMO: ", rol());
           if (rol() === "COORDINADOR") {
             next();
@@ -134,7 +132,7 @@ const routes = [
           import(
             /* webpackChunkName: "registrar-dependencia" */ "../views/views-coordinador/RegistrarDependencia.vue"
           ),
-        beforeEach: (to, from, next) => {
+        beforeEnter: (to, from, next) => {
           if (rol() === "COORDINADOR") {
             next();
           } else {
@@ -153,7 +151,7 @@ const routes = [
             /* webpackChunkName: "modificar-dependencia" */ "../views/views-coordinador/ModificarDependencia.vue"
           ),
         props: true,
-        beforeEach: (to, from, next) => {
+        beforeEnter: (to, from, next) => {
           if (rol() === "COORDINADOR") {
             next();
           } else {

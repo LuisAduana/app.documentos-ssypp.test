@@ -1,3 +1,6 @@
+import Coordinador from "./../../api/Coordinador";
+import { mapActions } from "vuex";
+
 export default {
   data: function() {
     return {
@@ -42,6 +45,29 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["snackBarError", "snackBarExito"]),
+
+    modificarDependencia() {
+      if (this.$refs.formularioDependencia.validate()) {
+        this.esperandoRespuesta = true;
+        Coordinador.modificarDependencia(this.formDependencia)
+          .then(() => {
+            this.esperandoRespuesta = false;
+            this.snackBarExito("Dependencia modificada exitosamente");
+          })
+          .catch(error => {
+            this.esperandoRespuesta = false;
+            if (error.response.status === 422) {
+              this.snackBarError(
+                error.response.data.errors.nombre_dependencia[0]
+              );
+            } else {
+              this.snackBarError("Ha ocurrido un error de modificación.");
+            }
+          });
+      }
+    },
+
     regresar() {
       this.$router.back();
     }
