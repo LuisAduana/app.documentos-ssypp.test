@@ -180,12 +180,13 @@ const routes = [
         }
       },
       {
-        path: "/registrar-responsable",
-        name: "RegistrarResponsable",
+        path: "/responsable",
+        name: "Responsable",
         component: () =>
           import(
-            /* webpackChunkName: "registrar-responsable" */ "../views/views-coordinador/RegistrarResponsable.vue"
+            /* webpackChunkName: "responsable" */ "../views/views-coordinador/Responsable.vue"
           ),
+        props: true,
         beforeEnter: (to, from, next) => {
           if (rol() === "COORDINADOR") {
             next();

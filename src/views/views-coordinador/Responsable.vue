@@ -12,7 +12,12 @@
           </v-row>
           <v-row>
             <v-col align="center">
-              <h1>Registrar Responsable</h1>
+              <h1 v-if="formResponsable.registro_responsable">
+                Registrar Responsable
+              </h1>
+              <h1 v-else>
+                Modificar Responsable
+              </h1>
             </v-col>
           </v-row>
           <v-row>
@@ -75,12 +80,22 @@
                 <v-row>
                   <v-col align="center">
                     <v-btn
+                      v-if="formResponsable.registro_responsable"
                       :disabled="!validacion"
                       :loading="esperandoRespuesta"
                       color="success"
                       @click.prevent="registrarResponsable()"
                     >
                       Registrar
+                    </v-btn>
+                    <v-btn
+                      v-else
+                      :disabled="!validacion"
+                      :loading="esperandoRespuesta"
+                      color="success"
+                      @click.prevent="modificarResponsable()"
+                    >
+                      Modificar
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -93,4 +108,4 @@
   </v-container>
 </template>
 
-<script src="./../../scripts/scripts-coordinador/RegistrarResponsable.js"></script>
+<script src="./../../scripts/scripts-coordinador/RegistrarModificarResponsable.js"></script>

@@ -36,7 +36,7 @@ export default {
       this.esperandoRespuestaActDesact = true;
       var datos = {
         estado:
-          this.dependenciaEdit.estado === "ACTIVO" ? "DESACTIVADO" : "ACTIVO",
+          this.dependenciaEdit.estado === "ACTIVO" ? "INACTIVO" : "ACTIVO",
         id: this.dependenciaEdit.id
       };
       Coordinador.actDesactDependencia(datos)
@@ -48,7 +48,7 @@ export default {
             ) {
               this.dependencias[i].estado =
                 this.dependenciaEdit.estado === "ACTIVO"
-                  ? "DESACTIVADO"
+                  ? "INACTIVO"
                   : "ACTIVO";
             }
           }

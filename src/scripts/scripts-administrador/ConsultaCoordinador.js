@@ -42,7 +42,7 @@ export default {
     activarDesactivarConfirmacion() {
       var datos = {
         estado:
-          this.coordinadorEdit.estado === "ACTIVO" ? "DESACTIVADO" : "ACTIVO",
+          this.coordinadorEdit.estado === "ACTIVO" ? "INACTIVO" : "ACTIVO",
         correo: this.coordinadorEdit.correo
       };
       Administrador.actDesactCoordinador(datos)
@@ -51,7 +51,7 @@ export default {
             if (this.coordinadores[i].correo === this.coordinadorEdit.correo) {
               this.coordinadores[i].estado =
                 this.coordinadorEdit.estado === "ACTIVO"
-                  ? "DESACTIVADO"
+                  ? "INACTIVO"
                   : "ACTIVO";
             }
           }

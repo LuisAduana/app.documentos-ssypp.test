@@ -27,6 +27,14 @@ export default {
     await Csrf.getCookie();
     return Api.post("/coordinador/registrar-responsable", formulario);
   },
+  async modificarResponsable(formulario) {
+    await Csrf.getCookie();
+    return Api.put("/coordinador/modificar-responsable", formulario);
+  },
+  async actDesactResponsable(formulario) {
+    await Csrf.getCookie();
+    return Api.put("/coordinador/activar-desactivar-responsable", formulario);
+  },
 
   async obtenerNombresDependencias() {
     await Csrf.getCookie();

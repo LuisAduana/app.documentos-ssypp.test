@@ -1,4 +1,4 @@
-import Coordinador from "./../../api/Coordinador";
+import Coordinador from "../../api/Coordinador";
 import { mapActions } from "vuex";
 
 export default {
@@ -8,14 +8,7 @@ export default {
       esperandoRespuesta: false,
       validacion: true,
       nombres_dependencias: [],
-      formResponsable: {
-        nombre_responsable: "",
-        cargo: "",
-        correo: "",
-        num_contacto: "",
-        estado: "ACTIVO",
-        nombre_dependencia: ""
-      },
+      formResponsable: this.responsable,
       nombre_responsableRules: [
         v => !!v || "Nombre de responsable requerido",
         v =>
@@ -47,6 +40,20 @@ export default {
   methods: {
     ...mapActions(["snackBarError", "snackBarExito"]),
 
+    modificarResponsable() {
+      if (this.$refs.formularioResponsable.validate()) {
+        this.esperandoRespuesta = true;
+        Coordinador.modificarResponsable(this.formResponsable)
+          .then(() => {
+            this.esperandoRespuesta = false;
+            this.snackBarExito("¡Responsable modificado exitosamente!");
+          })
+          .catch(error => {
+            this.mensajeErrores(error);
+          });
+      }
+    },
+
     registrarResponsable() {
       if (this.$refs.formularioResponsable.validate()) {
         this.esperandoRespuesta = true;
@@ -57,17 +64,38 @@ export default {
             this.$refs.formularioResponsable.reset();
           })
           .catch(error => {
-            this.esperandoRespuesta = false;
-            if (error.response.status === 422) {
-              this.snackBarError("El responsable ya se ha registrado");
-            } else {
-              this.snackBarError("Algo salió mal, inténtelo de nuevo.");
-            }
+            this.mensajeErrores(error);
           });
       }
     },
+
+    mensajeErrores(error) {
+      this.esperandoRespuesta = false;
+      if (error.response.status === 422) {
+        this.snackBarError("El responsable ya se ha registrado");
+      } else {
+        this.snackBarError("Algo salió mal, inténtelo de nuevo.");
+      }
+    },
+
     regresar() {
       this.$router.back();
+    }
+  },
+  props: {
+    responsable: {
+      type: Object,
+      default: function() {
+        return {
+          nombre_responsable: "",
+          cargo: "",
+          correo: "",
+          num_contacto: "",
+          estado: "ACTIVO",
+          nombre_dependencia: "",
+          registro_responsable: true
+        };
+      }
     }
   },
   mounted() {
@@ -80,7 +108,7 @@ export default {
       .catch(() => {
         this.$store.dispatch(
           "snackBarInfo",
-          "No se pudieron consultar las dependencias, sin las dependencias no podrá registrar un nuevo responsable. Recargue la página."
+          "No se pudieron consultar las dependencias, sin las dependencias no podrá registrar o modificar un responsable. Recargue la página."
         );
         this.esperandoNombres = false;
       });
