@@ -114,7 +114,6 @@ const routes = [
             /* webpackChunkName: "consulta-dependencias" */ "../views/views-coordinador/ConsultaDependencia.vue"
           ),
         beforeEnter: (to, from, next) => {
-          console.log("ENTRO EN EL BEFORE COMO: ", rol());
           if (rol() === "COORDINADOR") {
             next();
           } else {
@@ -151,6 +150,42 @@ const routes = [
             /* webpackChunkName: "modificar-dependencia" */ "../views/views-coordinador/ModificarDependencia.vue"
           ),
         props: true,
+        beforeEnter: (to, from, next) => {
+          if (rol() === "COORDINADOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
+        path: "/consulta-responsables",
+        name: "ConsultaResponsables",
+        component: () =>
+          import(
+            /* webpackChunkName: "consulta-responsables" */ "../views/views-coordinador/ConsultaResponsable.vue"
+          ),
+        beforeEnter: (to, from, next) => {
+          if (rol() === "COORDINADOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
+        path: "/registrar-responsable",
+        name: "RegistrarResponsable",
+        component: () =>
+          import(
+            /* webpackChunkName: "registrar-responsable" */ "../views/views-coordinador/RegistrarResponsable.vue"
+          ),
         beforeEnter: (to, from, next) => {
           if (rol() === "COORDINADOR") {
             next();

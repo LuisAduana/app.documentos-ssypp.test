@@ -18,6 +18,11 @@ export default {
         icon: "mdi-office-building-outline",
         ruta: "/consulta-dependencias"
       },
+      {
+        text: "Responsables",
+        icon: "mdi-account",
+        ruta: "/consulta-responsables"
+      },
       { text: "Proyectos", icon: "mdi-account", ruta: "/consulta-proyectos" },
       { text: "Documentos", icon: "mdi-flag", ruta: "/consulta-documentos" }
     ]

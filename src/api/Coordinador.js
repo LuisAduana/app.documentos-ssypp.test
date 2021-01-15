@@ -17,5 +17,19 @@ export default {
   async actDesactDependencia(formulario) {
     await Csrf.getCookie();
     return Api.put("/coordinador/activar-desactivar-dependencia", formulario);
+  },
+
+  async obtenerResponsables() {
+    await Csrf.getCookie();
+    return Api.get("/coordinador/obtener-responsables");
+  },
+  async registrarResponsable(formulario) {
+    await Csrf.getCookie();
+    return Api.post("/coordinador/registrar-responsable", formulario);
+  },
+
+  async obtenerNombresDependencias() {
+    await Csrf.getCookie();
+    return Api.get("/coordinador/obtener-nombres-dependencias");
   }
 };

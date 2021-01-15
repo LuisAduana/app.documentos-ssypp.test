@@ -23,6 +23,7 @@ import { mapState } from "vuex";
 export default {
   name: "App",
   data: () => ({
+    dependencias: ["hola", "mundo"]
     // Hola mundo
   }),
   computed: {
