@@ -12,7 +12,12 @@
           </v-row>
           <v-row>
             <v-col align="center">
-              <h1>Registrar Dependencia</h1>
+              <h1 v-if="formDependencia.registro_dependencia">
+                Registrar Dependencia
+              </h1>
+              <h1 v-else>
+                Modificar Dependencia
+              </h1>
             </v-col>
           </v-row>
           <v-row>
@@ -107,12 +112,22 @@
                 <v-row>
                   <v-col align="center">
                     <v-btn
+                      v-if="formDependencia.registro_dependencia"
                       :disabled="!validacion"
                       :loading="esperandoRespuesta"
                       color="success"
                       @click.prevent="registrarDependencia()"
                     >
                       Registrar
+                    </v-btn>
+                    <v-btn
+                      v-else
+                      :disabled="!validacion"
+                      :loading="esperandoRespuesta"
+                      color="success"
+                      @click.prevent="modificarDependencia()"
+                    >
+                      Modificar
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -125,4 +140,4 @@
   </v-container>
 </template>
 
-<script src="./../../scripts/scripts-coordinador/RegistrarDependencia.js"></script>
+<script src="./../../scripts/scripts-coordinador/RegistrarModificarDependencia.js"></script>

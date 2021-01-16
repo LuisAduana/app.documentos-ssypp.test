@@ -3,7 +3,8 @@
     <v-col align="center">
       <v-card>
         <v-card-title>
-          <h2>Dependencias Registradas</h2>
+          <h2>Dependencias</h2>
+          <v-divider class="mx-4" vertical></v-divider>
           <v-spacer></v-spacer>
           <v-text-field
             v-model="busqueda"
@@ -13,6 +14,8 @@
             hide-details
           ></v-text-field>
           <v-spacer></v-spacer>
+          <v-switch v-model="soloInactivos" label="Solo inactivos"></v-switch>
+          <v-spacer></v-spacer>
           <v-btn color="success" @click="registrarDependencia()">
             Nuevo
           </v-btn>
@@ -20,7 +23,7 @@
         <v-divider></v-divider>
         <v-data-table
           :headers="cabeceras"
-          :items="dependencias"
+          :items="dependenciasEnTabla"
           :search="busqueda"
           :items-per-page="10"
           :loading="esperandoTabla"

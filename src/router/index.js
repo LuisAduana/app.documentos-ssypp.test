@@ -125,29 +125,11 @@ const routes = [
         }
       },
       {
-        path: "/registrar-dependencia",
-        name: "RegistrarDependencia",
+        path: "/dependencia",
+        name: "Dependencia",
         component: () =>
           import(
-            /* webpackChunkName: "registrar-dependencia" */ "../views/views-coordinador/RegistrarDependencia.vue"
-          ),
-        beforeEnter: (to, from, next) => {
-          if (rol() === "COORDINADOR") {
-            next();
-          } else {
-            next({
-              name: "NotFound",
-              query: { redirect: to.fullPath }
-            });
-          }
-        }
-      },
-      {
-        path: "/modificar-dependencia",
-        name: "ModificarDependencia",
-        component: () =>
-          import(
-            /* webpackChunkName: "modificar-dependencia" */ "../views/views-coordinador/ModificarDependencia.vue"
+            /* webpackChunkName: "registrar-dependencia" */ "../views/views-coordinador/Dependencia.vue"
           ),
         props: true,
         beforeEnter: (to, from, next) => {

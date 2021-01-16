@@ -45,7 +45,9 @@
       <div v-else-if="getUsuario.usuario.rol_usuario === 'COORDINADOR'">
         <v-list-item>
           <v-list-item-icon>
-            <v-icon>mdi-menu</v-icon>
+            <v-btn icon @click="drawer = !drawer">
+              <v-icon>mdi-menu</v-icon>
+            </v-btn>
           </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title class="title">

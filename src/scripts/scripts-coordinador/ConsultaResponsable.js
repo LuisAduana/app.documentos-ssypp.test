@@ -6,10 +6,13 @@ export default {
     dialogoConfirmarActDesactivar: false,
     esperandoRespuestaActDesact: false,
     esperandoTabla: false,
+    soloInactivos: false,
     busqueda: "",
     mensaje: "",
+    responsablesEnTabla: [],
+    responsablesActivos: [],
+    responsablesInactivos: [],
     responsableEdit: {},
-    responsables: [],
     cabeceras: [
       { text: "Nombre", value: "nombre_responsable" },
       { text: "Dependencia", value: "nombre_dependencia" },
@@ -42,15 +45,21 @@ export default {
       };
       Coordinador.actDesactResponsable(datos)
         .then(() => {
-          for (var i = 0; i < this.responsables.length; i++) {
+          for (var i = 0; i < this.responsablesEnTabla.length; i++) {
             if (
-              this.responsables[i].nombre_responsable ===
+              this.responsablesEnTabla[i].nombre_responsable ===
               this.responsableEdit.nombre_responsable
             ) {
-              this.responsables[i].estado =
+              if (this.responsablesEnTabla[i].estado === "ACTIVO") {
+                this.responsablesInactivos.push(this.responsablesEnTabla[i]);
+              } else {
+                this.responsablesActivos.push(this.responsablesEnTabla[i]);
+              }
+              this.responsablesEnTabla[i].estado =
                 this.responsableEdit.estado === "ACTIVO"
                   ? "INACTIVO"
                   : "ACTIVO";
+              this.responsablesEnTabla.splice(i, 1);
             }
           }
           this.esperandoRespuestaActDesact = false;
@@ -81,7 +90,14 @@ export default {
     this.esperandoTabla = true;
     Coordinador.obtenerResponsables()
       .then(response => {
-        this.responsables = response.data;
+        for (var i = 0; i < response.data.length; i++) {
+          if (response.data[i].estado === "ACTIVO") {
+            this.responsablesActivos.push(response.data[i]);
+          } else {
+            this.responsablesInactivos.push(response.data[i]);
+          }
+        }
+        this.responsablesEnTabla = this.responsablesActivos;
         this.esperandoTabla = false;
       })
       .catch(() => {
@@ -91,5 +107,14 @@ export default {
         );
         this.esperandoTabla = false;
       });
+  },
+  watch: {
+    soloInactivos() {
+      if (this.soloInactivos) {
+        this.responsablesEnTabla = this.responsablesInactivos;
+      } else {
+        this.responsablesEnTabla = this.responsablesActivos;
+      }
+    }
   }
 };

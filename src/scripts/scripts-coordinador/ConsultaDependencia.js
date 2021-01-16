@@ -6,9 +6,12 @@ export default {
     dialogoConfirmarActDesactivar: false,
     esperandoRespuestaActDesact: false,
     esperandoTabla: false,
+    soloInactivos: false,
     busqueda: "",
     mensaje: "",
-    dependencias: [],
+    dependenciasEnTabla: [],
+    dependenciasActivas: [],
+    dependenciasInactivas: [],
     dependenciaEdit: {},
     cabeceras: [
       { text: "Nombre", value: "nombre_dependencia" },
@@ -24,11 +27,12 @@ export default {
     ...mapActions(["snackBarError", "snackBarExito"]),
 
     registrarDependencia() {
-      this.$router.push({ name: "RegistrarDependencia" });
+      this.$router.push({ name: "Dependencia" });
     },
     editarDependencia(dependencia) {
+      dependencia.registro_dependencia = false;
       this.$router.push({
-        name: "ModificarDependencia",
+        name: "Dependencia",
         params: { dependencia: dependencia }
       });
     },
@@ -41,15 +45,21 @@ export default {
       };
       Coordinador.actDesactDependencia(datos)
         .then(() => {
-          for (var i = 0; i < this.dependencias.length; i++) {
+          for (var i = 0; i < this.dependenciasEnTabla.length; i++) {
             if (
-              this.dependencias[i].nombre_dependencia ===
+              this.dependenciasEnTabla[i].nombre_dependencia ===
               this.dependenciaEdit.nombre_dependencia
             ) {
-              this.dependencias[i].estado =
+              if (this.dependenciasEnTabla[i].estado === "ACTIVO") {
+                this.dependenciasInactivas.push(this.dependenciasEnTabla[i]);
+              } else {
+                this.dependenciasActivas.push(this.dependenciasEnTabla[i]);
+              }
+              this.dependenciasEnTabla[i].estado =
                 this.dependenciaEdit.estado === "ACTIVO"
                   ? "INACTIVO"
                   : "ACTIVO";
+              this.dependenciasEnTabla.splice(i, 1);
             }
           }
           this.esperandoRespuestaActDesact = false;
@@ -80,7 +90,14 @@ export default {
     this.esperandoTabla = true;
     Coordinador.obtenerDependencias()
       .then(response => {
-        this.dependencias = response.data;
+        for (var i = 0; i < response.data.length; i++) {
+          if (response.data[i].estado === "ACTIVO") {
+            this.dependenciasActivas.push(response.data[i]);
+          } else {
+            this.dependenciasInactivas.push(response.data[i]);
+          }
+        }
+        this.dependenciasEnTabla = this.dependenciasActivas;
         this.esperandoTabla = false;
       })
       .catch(() => {
@@ -90,5 +107,14 @@ export default {
         );
         this.esperandoTabla = false;
       });
+  },
+  watch: {
+    soloInactivos() {
+      if (this.soloInactivos) {
+        this.dependenciasEnTabla = this.dependenciasInactivas;
+      } else {
+        this.dependenciasEnTabla = this.dependenciasActivas;
+      }
+    }
   }
 };

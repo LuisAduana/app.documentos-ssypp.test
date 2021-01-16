@@ -1,4 +1,4 @@
-import Coordinador from "./../../api/Coordinador";
+import Coordinador from "../../api/Coordinador";
 import { mapActions } from "vuex";
 
 export default {
@@ -44,6 +44,7 @@ export default {
       ]
     };
   },
+
   methods: {
     ...mapActions(["snackBarError", "snackBarExito"]),
 
@@ -68,23 +69,51 @@ export default {
       }
     },
 
+    registrarDependencia() {
+      if (this.$refs.formularioDependencia.validate()) {
+        this.esperandoRespuesta = true;
+        Coordinador.registrarDependencia(this.formDependencia)
+          .then(() => {
+            this.esperandoRespuesta = false;
+            this.$refs.formularioDependencia.reset();
+            this.snackBarExito("Dependencia registrada exitosamente!");
+          })
+          .catch(error => {
+            this.esperandoRespuesta = false;
+            if (error.response.status === 422) {
+              this.snackBarError(
+                "El nombre de la dependencia ya ha sido registrado"
+              );
+            } else {
+              this.snackBarError("Ha ocurrido un error, inténtelo nuevamente");
+            }
+          });
+      }
+    },
+
     regresar() {
       this.$router.back();
     }
   },
+
   props: {
     dependencia: {
       type: Object,
       default: function() {
         return {
-          nombre_dependencia: ""
+          nombre_dependencia: "",
+          nombre_contacto: "",
+          direccion: "",
+          ciudad: "",
+          correo: "",
+          num_contacto: "",
+          sector: "",
+          num_us_directos: "",
+          num_us_indirectos: "",
+          estado: "ACTIVO",
+          registro_dependencia: true
         };
       }
-    }
-  },
-  mounted() {
-    if (this.formDependencia.nombre_dependencia === "") {
-      this.$router.push({ name: "ConsultaDependencias" });
     }
   }
 };
