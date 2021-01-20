@@ -3,7 +3,7 @@
     <v-col align="center">
       <v-card>
         <v-card-title>
-          <h2>Dependencias</h2>
+          <h2>Proyectos Servicio Social</h2>
           <v-divider class="mx-4" vertical></v-divider>
           <v-spacer></v-spacer>
           <v-text-field
@@ -16,24 +16,39 @@
           <v-spacer></v-spacer>
           <v-switch v-model="soloInactivos" label="Solo inactivos"></v-switch>
           <v-spacer></v-spacer>
-          <v-btn color="success" @click="registrarDependencia()">
+          <v-btn color="success" @click="registrarProyectoServicio()">
             Nuevo
           </v-btn>
         </v-card-title>
         <v-divider></v-divider>
         <v-data-table
           :headers="cabeceras"
-          :items="dependenciasEnTabla"
+          :items="proyectosEnTabla"
           :search="busqueda"
           :items-per-page="10"
           :loading="esperandoTabla"
           sort-by="nombre_dependencia"
           loading-text="Cargando... espere porfavor"
           class="elevation-1"
-          :footer-props="{ 'items-per-page-text': 'dependencias por pág.' }"
+          :footer-props="{ 'items-per-page-text': 'proyectos por pág.' }"
         >
           <template v-slot:no-data>No existen registros</template>
           <template v-slot:no-results>No se encontraron coincidencias</template>
+          <template v-slot:item.edicion="{ item }">
+            <v-icon small class="mr-2" @click="modificarProyectoServicio(item)">
+              mdi-pencil
+            </v-icon>
+            <v-icon
+              v-if="!soloInactivos"
+              small
+              @click="desactivarActivarProyecto(item)"
+            >
+              mdi-delete
+            </v-icon>
+            <v-icon v-else small @click="desactivarActivarProyecto(item)">
+              mdi-restart
+            </v-icon>
+          </template>
           <template v-slot:top>
             <v-dialog
               v-model="dialogoConfirmarActDesactivar"
@@ -63,25 +78,10 @@
               </v-card>
             </v-dialog>
           </template>
-          <template v-slot:item.edicion="{ item }">
-            <v-icon small class="mr-2" @click="editarDependencia(item)">
-              mdi-pencil
-            </v-icon>
-            <v-icon
-              v-if="!soloInactivos"
-              small
-              @click="desactivarActivarDependencia(item)"
-            >
-              mdi-delete
-            </v-icon>
-            <v-icon v-else small @click="desactivarActivarDependencia(item)">
-              mdi-restart
-            </v-icon>
-          </template>
         </v-data-table>
       </v-card>
     </v-col>
   </v-container>
 </template>
 
-<script src="./../../scripts/scripts-coordinador/ConsultaDependencia.js"></script>
+<script src="./../../scripts/scripts-coordinador/ConsultaProyectoServicio.js"></script>

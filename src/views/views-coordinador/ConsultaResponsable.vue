@@ -38,8 +38,15 @@
             <v-icon small class="mr-2" @click="editarResponsable(item)">
               mdi-pencil
             </v-icon>
-            <v-icon small @click="desactivarActivarResponsable(item)">
+            <v-icon
+              v-if="!soloInactivos"
+              small
+              @click="desactivarActivarResponsable(item)"
+            >
               mdi-delete
+            </v-icon>
+            <v-icon v-else small @click="desactivarActivarResponsable(item)">
+              mdi-restart
             </v-icon>
           </template>
           <template v-slot:top>

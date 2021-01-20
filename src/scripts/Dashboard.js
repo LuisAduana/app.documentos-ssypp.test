@@ -23,8 +23,21 @@ export default {
         icon: "mdi-account",
         ruta: "/consulta-responsables"
       },
-      { text: "Proyectos", icon: "mdi-account", ruta: "/consulta-proyectos" },
-      { text: "Documentos", icon: "mdi-flag", ruta: "/consulta-documentos" }
+      {
+        text: "Proyectos Servicio",
+        icon: "mdi-file-cabinet",
+        ruta: "/consulta-proyectos-servicio"
+      },
+      {
+        text: "Proyectos Practica",
+        icon: "mdi-clipboard-file",
+        ruta: "/consulta-proyectos-servicios"
+      },
+      {
+        text: "Documentos",
+        icon: "mdi-file-multiple",
+        ruta: "/consulta-proyectos-servicioss"
+      }
     ]
   }),
   methods: {

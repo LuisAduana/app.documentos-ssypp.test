@@ -179,6 +179,43 @@ const routes = [
             });
           }
         }
+      },
+      {
+        path: "/consulta-proyectos-servicio",
+        name: "ConsultaProyectosServicio",
+        component: () =>
+          import(
+            /* webpackChunkName: "consulta-proyectos-servicio" */ "../views/views-coordinador/ConsultaProyectoServicio.vue"
+          ),
+        beforeEnter: (to, from, next) => {
+          if (rol() === "COORDINADOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
+        path: "/proyecto-servicio",
+        name: "ProyectoServicio",
+        component: () =>
+          import(
+            /* webpackChunkName: "proyecto-servicio" */ "../views/views-coordinador/ProyectoServicio.vue"
+          ),
+        props: true,
+        beforeEnter: (to, from, next) => {
+          if (rol() === "COORDINADOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
       }
     ]
   },

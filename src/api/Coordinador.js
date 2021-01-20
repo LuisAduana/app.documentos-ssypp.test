@@ -35,9 +35,32 @@ export default {
     await Csrf.getCookie();
     return Api.put("/coordinador/activar-desactivar-responsable", formulario);
   },
+  async obtenerProyectosServicio() {
+    await Csrf.getCookie();
+    return Api.get("/coordinador/obtener-proyectos-servicio");
+  },
+  async registrarProyectoServicio(formulario) {
+    await Csrf.getCookie();
+    return Api.post("/coordinador/registrar-proyecto-servicio", formulario);
+  },
+  async modificarProyectoServicio(formulario) {
+    await Csrf.getCookie();
+    return Api.put("/coordinador/modificar-proyecto-servicio", formulario);
+  },
+  async actDesactProyecto(formulario) {
+    await Csrf.getCookie();
+    return Api.put("/coordinador/modificar-estado-proyecto", formulario);
+  },
 
   async obtenerNombresDependencias() {
     await Csrf.getCookie();
     return Api.get("/coordinador/obtener-nombres-dependencias");
+  },
+  async obtenerNombresResponsables(formulario) {
+    await Csrf.getCookie();
+    return Api.post(
+      "/coordinador/obtener-responsables-por-dependencia",
+      formulario
+    );
   }
 };
