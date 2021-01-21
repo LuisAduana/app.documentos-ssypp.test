@@ -24,7 +24,7 @@ export default {
     ]
   }),
   methods: {
-    ...mapActions(["snackBarError", "snackBarExito"]),
+    ...mapActions(["snackBarError", "snackBarExito", "snackBarInfo"]),
 
     registrarResponsable() {
       this.$router.push({ name: "Responsable" });
@@ -66,9 +66,14 @@ export default {
           this.cerrarDialogo();
           this.snackBarExito("Se ha desactivado exitosamente");
         })
-        .catch(() => {
+        .catch(error => {
+          console.log(error.response);
           this.esperandoRespuestaActDesact = false;
-          this.snackBarError("Ocurrió un error, inténtelo de nuevo");
+          if (error.response.status === 422) {
+            this.snackBarInfo(error.response.data.errors.estado[0]);
+          } else {
+            this.snackBarError("Ocurrió un error, inténtelo de nuevo");
+          }
         });
     },
     desactivarActivarResponsable(responsable) {

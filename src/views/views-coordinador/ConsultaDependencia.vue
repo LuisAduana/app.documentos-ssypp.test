@@ -64,7 +64,12 @@
             </v-dialog>
           </template>
           <template v-slot:item.edicion="{ item }">
-            <v-icon small class="mr-2" @click="editarDependencia(item)">
+            <v-icon
+              v-if="!soloInactivos"
+              small
+              class="mr-2"
+              @click="editarDependencia(item)"
+            >
               mdi-pencil
             </v-icon>
             <v-icon

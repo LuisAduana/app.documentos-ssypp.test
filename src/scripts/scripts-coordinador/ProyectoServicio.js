@@ -120,7 +120,7 @@ export default {
             this.nombres_responsables = [];
             this.$store.dispatch(
               "snackBarInfo",
-              "No hay ningún responsable registrado en esa dependencia. Por favor registre uno."
+              "No hay ningún responsable registrado o activados en esa dependencia. Por favor registre o active uno."
             );
           } else {
             this.nombres_responsables = response.data;

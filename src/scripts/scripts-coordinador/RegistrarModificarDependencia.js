@@ -49,6 +49,7 @@ export default {
     ...mapActions(["snackBarError", "snackBarExito"]),
 
     modificarDependencia() {
+      console.log(this.formDependencia);
       if (this.$refs.formularioDependencia.validate()) {
         this.esperandoRespuesta = true;
         Coordinador.modificarDependencia(this.formDependencia)

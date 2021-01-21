@@ -35,7 +35,12 @@
           <template v-slot:no-data>No existen registros</template>
           <template v-slot:no-results>No se encontraron coincidencias</template>
           <template v-slot:item.edicion="{ item }">
-            <v-icon small class="mr-2" @click="editarResponsable(item)">
+            <v-icon
+              v-if="!soloInactivos"
+              small
+              class="mr-2"
+              @click="editarResponsable(item)"
+            >
               mdi-pencil
             </v-icon>
             <v-icon

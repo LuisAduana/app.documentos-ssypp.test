@@ -41,20 +41,25 @@ export default {
     activarDesactivarConfirmacion() {
       this.esperandoRespuestaActDesact = true;
       var datos = {
-        estado: this.proyectoEdit.estado === "ACTIVO" ? "INACTIVO" : "ACTIVO",
+        estado:
+          this.proyectoEdit.estado === "NO ASIGNADO"
+            ? "INACTIVO"
+            : "NO ASIGNADO",
         id: this.proyectoEdit.id
       };
       Coordinador.actDesactProyecto(datos)
         .then(() => {
           for (var i = 0; i < this.proyectosEnTabla.length; i++) {
             if (this.proyectosEnTabla[i].id === this.proyectoEdit.id) {
-              if (this.proyectosEnTabla[i].estado === "ACTIVO") {
+              if (this.proyectosEnTabla[i].estado === "NO ASIGNADO") {
                 this.proyectosInactivos.push(this.proyectosEnTabla[i]);
               } else {
                 this.proyectosActivos.push(this.proyectosEnTabla[i]);
               }
               this.proyectosEnTabla[i].estado =
-                this.proyectoEdit.estado === "ACTIVO" ? "INACTIVO" : "ACTIVO";
+                this.proyectoEdit.estado === "NO ASIGNADO"
+                  ? "INACTIVO"
+                  : "NO ASIGNADO";
               this.proyectosEnTabla.splice(i, 1);
             }
           }
@@ -69,7 +74,7 @@ export default {
     },
     desactivarActivarProyecto(proyecto) {
       this.proyectoEdit = Object.assign({}, proyecto);
-      proyecto.estado === "ACTIVO"
+      proyecto.estado === "NO ASIGNADO"
         ? (this.mensaje = "desactivar este proyecto?")
         : (this.mensaje = "activar a este proyecto?");
       this.dialogoConfirmarActDesactivar = true;
