@@ -89,24 +89,6 @@ const routes = [
         }
       },
       {
-        path: "/consulta-proyectos",
-        name: "ConsultaProyectos",
-        component: () =>
-          import(
-            /* webpackChunkName: "consulta-proyectos" */ "../views/ConsultaProyectos.vue"
-          ),
-        beforeEnter: (to, from, next) => {
-          if (rol() === "COORDINADOR") {
-            next();
-          } else {
-            next({
-              name: "NotFound",
-              query: { redirect: to.fullPath }
-            });
-          }
-        }
-      },
-      {
         path: "/consulta-dependencias",
         name: "ConsultaDependencias",
         component: () =>
@@ -206,6 +188,79 @@ const routes = [
             /* webpackChunkName: "proyecto-servicio" */ "../views/views-coordinador/ProyectoServicio.vue"
           ),
         props: true,
+        beforeEnter: (to, from, next) => {
+          if (rol() === "COORDINADOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
+        path: "/consulta-proyectos-practicas",
+        name: "ConsultarProyectosPractica",
+        component: () =>
+          import(
+            /* webpackChunkName: "consulta-proyectos-practicas" */ "../views/views-coordinador/ConsultaProyectoPractica.vue"
+          ),
+        beforeEnter: (to, from, next) => {
+          if (rol() === "COORDINADOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
+        path: "/proyecto-practica",
+        name: "ProyectoPractica",
+        component: () =>
+          import(
+            /* webpackChunkName: "proyecto-practica" */ "../views/views-coordinador/ProyectoPractica.vue"
+          ),
+        props: true,
+        beforeEnter: (to, from, next) => {
+          if (rol() === "COORDINADOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
+        path: "/consulta-inscripcion",
+        name: "ConsultaInscripcion",
+        component: () =>
+          import(
+            /* webpackChunkName: "consulta-inscripcion" */ "../views/views-coordinador/ConsultaInscripcion.vue"
+          ),
+        beforeEnter: (to, from, next) => {
+          if (rol() === "COORDINADOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
+        path: "/registrar-inscripcion",
+        name: "RegistrarInscripcion",
+        component: () =>
+          import(
+            /* webpackChunkName: "registrar-inscripcion" */ "../views/views-coordinador/Inscripcion.vue"
+          ),
         beforeEnter: (to, from, next) => {
           if (rol() === "COORDINADOR") {
             next();

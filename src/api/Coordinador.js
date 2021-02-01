@@ -35,6 +35,7 @@ export default {
     await Csrf.getCookie();
     return Api.put("/coordinador/activar-desactivar-responsable", formulario);
   },
+
   async obtenerProyectosServicio() {
     await Csrf.getCookie();
     return Api.get("/coordinador/obtener-proyectos-servicio");
@@ -50,6 +51,34 @@ export default {
   async actDesactProyecto(formulario) {
     await Csrf.getCookie();
     return Api.put("/coordinador/modificar-estado-proyecto", formulario);
+  },
+  async obtenerProyectoPractica() {
+    await Csrf.getCookie();
+    return Api.get("/coordinador/obtener-proyectos-practica");
+  },
+  async registrarProyectoPractica(formulario) {
+    await Csrf.getCookie();
+    return Api.post("/coordinador/registrar-proyecto-practica", formulario);
+  },
+  async modificarProyectoPractica(formulario) {
+    await Csrf.getCookie();
+    return Api.put("coordinador/modificar-proyecto-practica", formulario);
+  },
+  async actDesactProyectoPractica(formulario) {
+    await Csrf.getCookie();
+    return Api.put(
+      "/coordinador/modificar-estado-proyecto-practica",
+      formulario
+    );
+  },
+
+  async obtenerInscripciones() {
+    await Csrf.getCookie();
+    return Api.get("coordinador/obtener-inscripciones");
+  },
+  async registrarInscripcion(formulario) {
+    await Csrf.getCookie();
+    return Api.post("coordinador/registrar-inscripcion", formulario);
   },
 
   async obtenerNombresDependencias() {

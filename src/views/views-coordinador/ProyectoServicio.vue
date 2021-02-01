@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-col align="center">
-      <v-card max-width="10 00">
+      <v-card max-width="1000">
         <v-container>
           <v-row no-gutters>
             <v-col align="left">
@@ -119,4 +119,4 @@
   </v-container>
 </template>
 
-<script src="./../../scripts/scripts-coordinador/ProyectoServicio.js"></script>
+<script src="./../../scripts/scripts-coordinador/RegistrarModificarProyectoServicio.js"></script>

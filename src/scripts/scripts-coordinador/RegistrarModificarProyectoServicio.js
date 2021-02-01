@@ -1,4 +1,4 @@
-import Coordinador from "./../../api/Coordinador";
+import Coordinador from "../../api/Coordinador";
 import { mapActions } from "vuex";
 
 export default {
@@ -118,6 +118,7 @@ export default {
           this.esperandoNombresResponsable = false;
           if (response.data.length == 0) {
             this.nombres_responsables = [];
+            this.formProyectoServicio.nombre_responsable = "";
             this.$store.dispatch(
               "snackBarInfo",
               "No hay ningún responsable registrado o activados en esa dependencia. Por favor registre o active uno."

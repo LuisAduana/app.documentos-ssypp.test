@@ -31,12 +31,17 @@ export default {
       {
         text: "Proyectos Practica",
         icon: "mdi-clipboard-file",
-        ruta: "/consulta-proyectos-servicios"
+        ruta: "/consulta-proyectos-practicas"
       },
       {
         text: "Documentos",
         icon: "mdi-file-multiple",
         ruta: "/consulta-proyectos-servicioss"
+      },
+      {
+        text: "Inscripción",
+        icon: "mdi-clipboard-list-outline",
+        ruta: "/consulta-inscripcion"
       }
     ]
   }),
