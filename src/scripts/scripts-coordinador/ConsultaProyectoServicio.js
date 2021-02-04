@@ -45,8 +45,9 @@ export default {
           this.proyectoEdit.estado === "NO ASIGNADO"
             ? "INACTIVO"
             : "NO ASIGNADO",
-        id: this.proyectoEdit.id
+        id: this.proyectoEdit.id_proyecto
       };
+      console.log(datos);
       Coordinador.actDesactProyecto(datos)
         .then(() => {
           for (var i = 0; i < this.proyectosEnTabla.length; i++) {
