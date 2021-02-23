@@ -24,7 +24,9 @@ const routes = [
     name: "Registro",
     meta: { guestOnly: true },
     component: () =>
-      import(/* webpackChunkName: "registro" */ "../views/Registro.vue")
+      import(
+        /* webpackChunkName: "registro" */ "../views/views-alumno/Registro.vue"
+      )
   },
   {
     path: "/dashboard",
@@ -225,6 +227,24 @@ const routes = [
             /* webpackChunkName: "proyecto-practica" */ "../views/views-coordinador/ProyectoPractica.vue"
           ),
         props: true,
+        beforeEnter: (to, from, next) => {
+          if (rol() === "COORDINADOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
+        path: "/consulta-alumnos-inscritos",
+        name: "ConsultaAlumnosInscritos",
+        component: () =>
+          import(
+            /* webpackChunkName: "consulta-alumnos-inscritos" */ "../views/views-coordinador/ConsultarAlumnosInscritos.vue"
+          ),
         beforeEnter: (to, from, next) => {
           if (rol() === "COORDINADOR") {
             next();

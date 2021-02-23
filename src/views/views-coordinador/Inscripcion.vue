@@ -14,11 +14,11 @@
       <v-stepper v-model="step">
         <v-stepper-header>
           <v-stepper-step :complete="step > 1" step="1">
-            Horario de inscripción
+            Seleccion de proyectos
           </v-stepper-step>
           <v-divider></v-divider>
           <v-stepper-step step="2">
-            Selección de proyectos
+            Horario de inscripción
           </v-stepper-step>
         </v-stepper-header>
         <v-stepper-items>

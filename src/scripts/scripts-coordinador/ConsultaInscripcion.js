@@ -7,6 +7,7 @@ export default {
     soloInactivos: false,
     esperandoRespuesta: false,
     dialogoConfirmacion: false,
+    boton: "",
     busqueda: "",
     mensaje: "",
     inscripcionEdit: {},
@@ -28,41 +29,65 @@ export default {
       this.$router.push({ name: "RegistrarInscripcion" });
     },
     activarDesactivarConfirmacion() {
+      if (this.boton === "terminar") {
+        this.terminarInscripcion();
+      } else {
+        this.cancelarInscripcion();
+      }
+    },
+    terminarInscripcion() {
       this.esperandoRespuesta = true;
-      Coordinador.cancelarInscripciones(this.inscripcionEdit)
+      Coordinador.terminarInscripcion(this.inscripcionEdit)
         .then(() => {
-          for (var i = 0; i < this.inscripcionesEnTabla.length; i++) {
-            if (this.inscripcionesEnTabla[i].id === this.inscripcionEdit.id) {
-              if (
-                this.inscripcionesEnTabla[i].estado_inscripcion === "ACTIVO"
-              ) {
-                this.inscripcionesInactivas.push(this.inscripcionesEnTabla[i]);
-              } else {
-                this.inscripcionesActivas.push(this.inscripcionesEnTabla[i]);
-              }
-              this.inscripcionesEnTabla[i].estado_inscripcion =
-                this.inscripcionEdit.estado_inscripcion === "ACTIVO"
-                  ? "INACTIVO"
-                  : "ACTIVO";
-              this.inscripcionesEnTabla.splice(i, 1);
-            }
-          }
-          this.snackBarExito("La inscripción se canceló exitosamente.");
+          this.actualizarTabla();
+          this.snackBarExito("La inscripción se terminó exitosamente.");
           this.cerrarDialogo();
         })
         .catch(() => {
-          this.snackBarError("No se pudo cancelar la inscripción.");
+          this.snackBarError("No se pudo terminar la inscripción.");
         })
         .finally(() => {
           this.esperandoRespuesta = false;
         });
     },
-    desactivarActivar(inscripcion) {
+    cancelarInscripcion() {
+      this.esperandoRespuesta = true;
+      Coordinador.cancelarInscripcion(this.inscripcionEdit)
+        .then(() => {
+          this.actualizarTabla();
+          this.snackBarExito("¡La inscripción se canceló exitosamente!");
+          this.cerrarDialogo();
+        })
+        .catch(() => {
+          this.snackBarError("No se pudo cancelar la inscripcion.");
+        })
+        .finally(() => {
+          this.esperandoRespuesta = false;
+        });
+    },
+    desactivarActivar(inscripcion, boton) {
       this.inscripcionEdit = Object.assign({}, inscripcion);
-      inscripcion.estado_inscripcion === "ACTIVO"
-        ? (this.mensaje = "desactivar esta inscripción?")
-        : (this.mensaje = "activar esta inscripción?");
+      this.boton = boton;
+      this.boton === "terminar"
+        ? (this.mensaje = "terminar esta inscripción")
+        : (this.mensaje = "cancelar esta inscripción");
       this.dialogoConfirmacion = true;
+    },
+    actualizarTabla() {
+      for (var i = 0; i < this.inscripcionesEnTabla.length; i++) {
+        if (this.inscripcionesEnTabla[i].id === this.inscripcionEdit.id) {
+          if (this.inscripcionesEnTabla[i].estado_inscripcion === "ACTIVO") {
+            this.inscripcionesInactivas.push(this.inscripcionesEnTabla[i]);
+          } else {
+            this.inscripcionesActivas.push(this.inscripcionesEnTabla[i]);
+          }
+          this.inscripcionesEnTabla[i].estado_inscripcion =
+            this.inscripcionEdit.estado_inscripcion === "ACTIVO"
+              ? "INACTIVO"
+              : "ACTIVO";
+          this.inscripcionesEnTabla.splice(i, 1);
+        }
+      }
     },
     cerrarDialogo() {
       this.dialogoConfirmacion = false;

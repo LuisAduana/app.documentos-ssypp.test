@@ -48,7 +48,11 @@
             >
               mdi-delete
             </v-icon>
-            <v-icon v-else small @click="desactivarActivarProyecto(item)">
+            <v-icon
+              v-if="item.estado == 'INACTIVO' && soloInactivos"
+              small
+              @click="desactivarActivarProyecto(item)"
+            >
               mdi-restart
             </v-icon>
           </template>

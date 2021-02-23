@@ -17,7 +17,7 @@ export default {
       { text: "Nombre del Proyecto", value: "nombre_proyecto" },
       { text: "Nombre de Dependencia", value: "nombre_dependencia" },
       { text: "Nombre del Responsable", value: "nombre_responsable" },
-      { text: "Metodología", value: "metodologia" },
+      { text: "Estado", value: "estado" },
       { text: "Duración", value: "duracion" },
       { text: "Horario", value: "horario" },
       { text: "Edición", value: "edicion", sortable: false }
@@ -90,7 +90,7 @@ export default {
     Coordinador.obtenerProyectoPractica()
       .then(response => {
         for (var i = 0; i < response.data.length; i++) {
-          if (response.data[i].estado !== "INACTIVO") {
+          if (response.data[i].estado == "NO ASIGNADO") {
             this.proyectosActivos.push(response.data[i]);
           } else {
             this.proyectosInactivos.push(response.data[i]);

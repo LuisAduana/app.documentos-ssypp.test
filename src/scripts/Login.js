@@ -20,29 +20,37 @@ export default {
     ]
   }),
   methods: {
-    ...mapActions(["snackBarError", "saveAuth"]),
+    ...mapActions(["snackBarError", "snackBarInfo", "saveAuth"]),
 
     login() {
       if (this.$refs.formularioCredenciales.validate()) {
         this.esperandoRespuesta = true;
         Api.login(this.formCredenciales)
           .then(response => {
-            this.esperandoRespuesta = false;
-            if (response.data.estado === "ACTIVO") {
+            if (
+              response.data.estado === "INSCRITO" ||
+              response.data.estado === "ACTIVO"
+            ) {
               localStorage.setItem("auth", "true");
               localStorage.setItem("rol", response.data.rol_usuario);
               this.$router.push({ name: "Dashboard" });
+            } else if (response.data.estado === "INSCRIPCION") {
+              this.snackBarInfo(
+                "Actualmente te encuentras en proceso de asignación."
+              );
             } else {
               this.snackBarError("Tu usuario está desactivado");
             }
           })
           .catch(error => {
-            this.esperandoRespuesta = false;
             if (error.response.status === 422) {
               this.snackBarError("Las credenciales son inválidas");
             } else {
               this.snackBarError("Hubo un error, inténtelo nuevamente");
             }
+          })
+          .finally(() => {
+            this.esperandoRespuesta = false;
           });
       }
     },

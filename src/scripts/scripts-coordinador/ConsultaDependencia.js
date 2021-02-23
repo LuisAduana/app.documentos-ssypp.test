@@ -62,13 +62,14 @@ export default {
               this.dependenciasEnTabla.splice(i, 1);
             }
           }
-          this.esperandoRespuestaActDesact = false;
           this.cerrarDialogo();
           this.snackBarExito("Se ha desactivado con exitosamente");
         })
         .catch(() => {
-          this.esperandoRespuestaActDesact = false;
           this.snackBarError("Ocurrió un error, inténtelo de nuevo");
+        })
+        .finally(() => {
+          this.esperandoRespuestaActDesact = false;
         });
     },
     desactivarActivarDependencia(dependencia) {

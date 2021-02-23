@@ -6,6 +6,10 @@ export default {
     await Csrf.getCookie();
     return Api.post("/login", formulario);
   },
+  async obtenerInformacionAlumno(formulario) {
+    await Csrf.getCookie();
+    return Api.post("/obtener-informacion-alumno", formulario);
+  },
   async logout() {
     await Csrf.getCookie();
     return Api.post("/logout");

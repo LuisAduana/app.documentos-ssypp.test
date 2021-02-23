@@ -5,6 +5,7 @@ export default {
   data: () => ({
     drawer: false,
     itemSeleccionado: 0,
+    informacionProyecto: {},
     menuAdministrador: [
       {
         text: "Coordinadores",
@@ -34,6 +35,11 @@ export default {
         ruta: "/consulta-proyectos-practicas"
       },
       {
+        text: "Alumnos Inscritos",
+        icon: "mdi-account-edit",
+        ruta: "/consulta-alumnos-inscritos"
+      },
+      {
         text: "Documentos",
         icon: "mdi-file-multiple",
         ruta: "/consulta-proyectos-servicioss"
@@ -43,10 +49,27 @@ export default {
         icon: "mdi-clipboard-list-outline",
         ruta: "/consulta-inscripcion"
       }
+    ],
+    menuAlumno: [
+      {
+        text: "Documentos",
+        icon: "mdi-block-helper",
+        ruta: ""
+      },
+      {
+        text: "Cargar documento",
+        icon: "mdi-block-helper",
+        ruta: ""
+      },
+      {
+        text: "Generar documentos",
+        icon: "mdi-block-helper",
+        ruta: ""
+      }
     ]
   }),
   methods: {
-    ...mapActions(["saveAuth"]),
+    ...mapActions(["saveAuth", "saveUsuario", "saveInformacionDashboard"]),
 
     logout() {
       Api.logout().then(() => {
@@ -57,12 +80,19 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["getUsuario"])
+    ...mapGetters(["getUsuario", "getInformacionDashboard"])
   },
   mounted() {
     Api.auth()
       .then(response => {
         this.$store.dispatch("saveUsuario", response.data);
+        if (response.data.rol_usuario === "ALUMNO") {
+          Api.obtenerInformacionAlumno({ id: response.data.id }).then(
+            response => {
+              this.$store.dispatch("saveInformacionDashboard", response.data);
+            }
+          );
+        }
       })
       .catch(error => {
         if (error.response.status === 401) {

@@ -35,7 +35,6 @@ export default {
     await Csrf.getCookie();
     return Api.put("/coordinador/activar-desactivar-responsable", formulario);
   },
-
   async obtenerProyectosServicio(tipo_consulta) {
     await Csrf.getCookie();
     return Api.post("/coordinador/obtener-proyectos-servicio", tipo_consulta);
@@ -54,7 +53,7 @@ export default {
   },
   async obtenerProyectoPractica() {
     await Csrf.getCookie();
-    return Api.get("/coordinador/obtener-proyectos-practica");
+    return Api.post("/coordinador/obtener-proyectos-practica");
   },
   async registrarProyectoPractica(formulario) {
     await Csrf.getCookie();
@@ -71,6 +70,18 @@ export default {
       formulario
     );
   },
+  async obtenerAlumnosInscritos() {
+    await Csrf.getCookie();
+    return Api.get("coordinador/obtener-alumnos-inscritos");
+  },
+  async obtenerProyectosSeleccionados(formulario) {
+    await Csrf.getCookie();
+    return Api.post("coordinador/obtener-proyectos-seleccionador", formulario);
+  },
+  async asignarProyecto(formulario) {
+    await Csrf.getCookie();
+    return Api.post("coordinador/asignar-alumno-proyecto", formulario);
+  },
 
   async obtenerInscripciones() {
     await Csrf.getCookie();
@@ -78,11 +89,15 @@ export default {
   },
   async registrarInscripcion(formulario) {
     await Csrf.getCookie();
-    return Api.post("coordinador/registrar-inscripcion-servicio", formulario);
+    return Api.post("coordinador/registrar-inscripcion", formulario);
   },
-  async cancelarInscripciones(formulario) {
+  async terminarInscripcion(formulario) {
     await Csrf.getCookie();
-    return Api.put("coordinador/cancelar-inscripciones-servicio", formulario);
+    return Api.put("coordinador/terminar-inscripcion", formulario);
+  },
+  async cancelarInscripcion(formulario) {
+    await Csrf.getCookie();
+    return Api.put("coordinador/cancelar-inscripcion", formulario);
   },
 
   async obtenerNombresDependencias() {

@@ -36,8 +36,19 @@
           <template v-slot:no-data>No existen registros</template>
           <template v-slot:no-results>No se encontraron coincidencias</template>
           <template v-slot:item.edicion="{ item }">
-            <v-icon v-if="!soloInactivos" small @click="desactivarActivar(item)">
+            <v-icon
+              v-if="!soloInactivos"
+              small
+              @click="desactivarActivar(item, 'terminar')"
+            >
               mdi-delete
+            </v-icon>
+            <v-icon
+              v-if="!soloInactivos"
+              small
+              @click="desactivarActivar(item, 'cancelar')"
+            >
+              mdi-cancel
             </v-icon>
           </template>
           <template v-slot:top>
@@ -60,7 +71,7 @@
                       color="blue darken-1"
                       text
                       :loading="esperandoRespuesta"
-                      @click="activarDesactivarConfirmacion()"
+                      @click.prevent="activarDesactivarConfirmacion()"
                     >
                       Aceptar
                     </v-btn>

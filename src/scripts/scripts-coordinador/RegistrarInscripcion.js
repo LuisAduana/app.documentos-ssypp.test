@@ -35,6 +35,14 @@ export default {
       { text: "Horario", value: "horario" },
       { text: "Requisitos", value: "requisitos" }
     ],
+    cabecerasPracticas: [
+      { text: "Nombre del Proyecto", value: "nombre_proyecto" },
+      { text: "Nombre de Dependencia", value: "nombre_dependencia" },
+      { text: "Nombre del Responsable", value: "nombre_responsable" },
+      { text: "Metodología", value: "metodologia" },
+      { text: "Duración", value: "duracion" },
+      { text: "Horario", value: "horario" }
+    ],
     fin_inscripcionRules: [v => !!v || "Fin de inscripción requerido"]
   }),
   methods: {
@@ -53,32 +61,28 @@ export default {
           var datos = {
             inscripcion_inicio: this.inscripcion_inicio,
             fin_inscripcion: this.fin_inscripcion,
-            proyectos: this.seleccionados,
-            estado_inscripcion: "ACTIVO"
+            tipo_inscripcion: this.tipoInscripcion,
+            proyectos: this.seleccionados
           };
-          if (this.tipoInscripcion === "servicio") {
-            Coordinador.registrarInscripcion(datos)
-              .then(() => {
-                this.snackBarExito(
-                  "Se ha registrado la inscripción correctamente"
+          Coordinador.registrarInscripcion(datos)
+            .then(() => {
+              this.snackBarExito(
+                "Se ha registrado la inscripción correctamente"
+              );
+              this.$router.push({ name: "ConsultaInscripcion" });
+            })
+            .catch(error => {
+              if (error.response.status === 422) {
+                this.snackBarError(error.response.data.errors.inscripcion[0]);
+              } else {
+                this.snackBarError(
+                  "Ha ocurrido un error, inténtelo nuevamente."
                 );
-                this.$router.push({ name: "ConsultaInscripcion" });
-              })
-              .catch(error => {
-                if (error.response.status === 422) {
-                  this.snackBarError(error.response.data.errors.inscripcion[0]);
-                } else {
-                  this.snackBarError(
-                    "Ha ocurrido un error, inténtelo nuevamente."
-                  );
-                }
-              })
-              .finally(() => {
-                this.esperandoRespuesta = false;
-              });
-          } else {
-            console.log("INSCRIBIENDO PRACTICAS");
-          }
+              }
+            })
+            .finally(() => {
+              this.esperandoRespuesta = false;
+            });
         }
       }
     },
@@ -89,12 +93,13 @@ export default {
         tipo_consulta: "NO ASIGNADO"
       })
         .then(response => {
-          this.proyectos = response.data;
+          this.seleccionados = [];
           this.cabeceras = this.cabecerasServicio;
+          this.proyectos = response.data;
         })
         .catch(() => {
           this.snackBarError(
-            "No se pudieron consultar los proyectos. Inténtelo de nuevo"
+            "No se pudieron consultar los proyectos. Inténtelo de nuevo."
           );
         })
         .finally(() => {
@@ -102,8 +107,25 @@ export default {
         });
     },
     consultarProyectosPracticas() {
-      console.log("Registrar proyecto");
+      this.esperandoRespuesta = true;
+      Coordinador.obtenerProyectoPractica({
+        tipo_consulta: "NO ASIGNADO"
+      })
+        .then(response => {
+          this.seleccionados = [];
+          this.cabeceras = this.cabecerasPracticas;
+          this.proyectos = response.data;
+        })
+        .catch(() => {
+          this.snackBarError(
+            "No se pudieron consultar los proyectos. Inténtelo de nuevo."
+          );
+        })
+        .finally(() => {
+          this.esperandoRespuesta = false;
+        });
     },
+
     siguientePaso() {
       if (this.tipoInscripcion === "") {
         this.servicioBotonColor = "red lighten-1";
@@ -128,6 +150,7 @@ export default {
         this.servicioBotonColor = "primary";
       } else {
         this.servicioBotonColor = "grey lighten-1";
+        this.consultarProyectosPracticas();
         this.practicasBotonColor = "primary";
       }
       this.tipoInscripcion = rol;
@@ -142,9 +165,9 @@ export default {
           ? "0" + (new Date().getMonth() + 1)
           : new Date().getMonth() + 1;
       this.day =
-        new Date().getDay() <= 9
-          ? "0" + new Date().getDay()
-          : new Date().getDay();
+        new Date().getDate() <= 9
+          ? "0" + new Date().getDate()
+          : new Date().getDate();
       this.hour =
         new Date().getHours() <= 9
           ? "0" + new Date().getHours()
