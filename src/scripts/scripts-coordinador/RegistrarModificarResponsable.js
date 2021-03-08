@@ -38,7 +38,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["snackBarError", "snackBarExito"]),
+    ...mapActions(["snackBarError", "snackBarExito", "snackBarInfo"]),
 
     modificarResponsable() {
       if (this.$refs.formularioResponsable.validate()) {
@@ -102,15 +102,18 @@ export default {
     this.esperandoNombres = true;
     Coordinador.obtenerNombresDependencias()
       .then(response => {
+        if (response.data.length == 0) {
+          this.snackBarInfo("No existen dependencias, registre o active una.");
+        }
         this.nombres_dependencias = response.data;
-        this.esperandoNombres = false;
       })
       .catch(() => {
-        this.$store.dispatch(
-          "snackBarInfo",
+        this.snackBarError(
           "No se pudieron consultar las dependencias, sin las dependencias no podrá registrar o modificar un responsable. Recargue la página."
         );
-        this.esperandoNombres = false;
+      })
+      .finally(() => {
+        this.esperandoRespuesta = false;
       });
   }
 };

@@ -1,4 +1,4 @@
-import Coordinador from "../../api/Coordinador";
+import Api from "../../api/Coordinador";
 import { mapActions } from "vuex";
 
 export default {
@@ -43,36 +43,38 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["snackBarError", "snackBarExito"]),
+    ...mapActions(["snackBarError", "snackBarExito", "snackBarInfo"]),
 
     registrarProyectoServicio() {
       if (this.$refs.formularioProyectoServicio.validate()) {
         this.esperandoRespuesta = true;
-        Coordinador.registrarProyectoServicio(this.formProyectoServicio)
+        Api.registrarProyectoServicio(this.formProyectoServicio)
           .then(() => {
             this.snackBarExito("¡Proyecto registrado exitosamente!");
             this.$refs.formularioProyectoServicio.reset();
             this.esperandoRespuesta = false;
           })
           .catch(() => {
-            this.snackBarError("Ocurrió un error inténtelo de nuevo");
-            this.esperandoRespuesta = false;
+            this.mensajeErrores();
           });
       }
     },
     modificarProyectoServicio() {
       if (this.$refs.formularioProyectoServicio.validate()) {
         this.esperandoRespuesta = true;
-        Coordinador.modificarProyectoServicio(this.formProyectoServicio)
+        Api.modificarProyectoServicio(this.formProyectoServicio)
           .then(() => {
             this.snackBarExito("¡Proyecto modificado exitosamente!");
             this.esperandoRespuesta = false;
           })
           .catch(() => {
-            this.snackBarError("Ocurrió un error inténtelo de nuevo");
-            this.esperandoRespuesta = false;
+            this.mensajeErrores();
           });
       }
+    },
+    mensajeErrores() {
+      this.snackBarError("Ocurrió un error inténtelo de nuevo");
+      this.esperandoRespuesta = false;
     },
     regresar() {
       this.$router.back();
@@ -80,27 +82,27 @@ export default {
   },
   mounted() {
     this.esperandoNombresDependencia = true;
-    Coordinador.obtenerNombresDependencias()
+    Api.obtenerNombresDependencias()
       .then(response => {
         if (response.data.length == 0) {
-          this.$store.dispatch(
-            "snackBarInfo",
+          this.snackBarInfo(
             "No hay ninguna dependencia registrada. Por favor registre una."
           );
         } else {
           this.nombres_dependencias = response.data;
-          this.esperandoNombresDependencia = false;
         }
       })
       .catch(() => {
-        this.$store.dispatch(
-          "snackBarInfo",
+        this.snackBarInfo(
           "No se pudieron consultar las dependencias, sin las dependencias no podrá registrar o modificar un responsable. Recargue la página."
         );
+      })
+      .finally(() => {
         this.esperandoNombresDependencia = false;
       });
+
     if (!this.proyecto.registro_proyecto) {
-      Coordinador.obtenerNombresResponsables({
+      Api.obtenerNombresResponsables({
         nombre_dependencia: this.nombre_dependencia
       }).then(response => {
         this.nombres_responsables = response.data;
@@ -111,7 +113,7 @@ export default {
     nombre_dependencia() {
       this.esperandoNombresResponsable = true;
       this.formProyectoServicio.nombre_dependencia = this.nombre_dependencia;
-      Coordinador.obtenerNombresResponsables({
+      Api.obtenerNombresResponsables({
         nombre_dependencia: this.nombre_dependencia
       })
         .then(response => {

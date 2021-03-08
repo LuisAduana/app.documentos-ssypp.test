@@ -99,6 +99,30 @@ export default {
     await Csrf.getCookie();
     return Api.put("coordinador/cancelar-inscripcion", formulario);
   },
+  async consultarProfesores() {
+    await Csrf.getCookie();
+    return Api.get("coordinador/obtener-profesores");
+  },
+  async validarRegistroProfesor(formulario) {
+    await Csrf.getCookie();
+    return Api.post("coordinador/validar-registro", formulario);
+  },
+  async modificarProfesor(formulario) {
+    await Csrf.getCookie();
+    return Api.put("coordinador/modificar-profesor", formulario);
+  },
+  async obtenerAlumnosAsignados() {
+    await Csrf.getCookie();
+    return Api.get("utilidades/obtener-alumnos-asignados");
+  },
+  async registrarProfesor(formulario) {
+    await Csrf.getCookie();
+    return Api.post("coordinador/registrar-profesor", formulario);
+  },
+  async actDesactProfesor(formulario) {
+    await Csrf.getCookie();
+    return Api.put("coordinador/activar-desactivar-profesor", formulario);
+  },
 
   async obtenerNombresDependencias() {
     await Csrf.getCookie();

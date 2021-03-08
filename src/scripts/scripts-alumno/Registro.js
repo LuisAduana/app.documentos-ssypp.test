@@ -104,6 +104,7 @@ export default {
   }),
   methods: {
     ...mapActions(["snackBarError", "snackBarExito", "snackBarInfo"]),
+    ...mapActions("moduloRegistro", ["comprobarInscripcion"]),
 
     registrarInscripcion() {
       if (this.$refs.formularioToken.validate()) {
@@ -227,26 +228,8 @@ export default {
       this.$router.back();
     }
   },
-  mounted() {
-    Api.comprobarInscripcion()
-      .then(response => {
-        this.tipo_inscripcion = response.data.tipo_inscripcion;
-        console.log("tipo de inscripción: ", this.tipo_inscripcion);
-        this.proyectos = response.data.proyectos;
-        if (this.tipo_inscripcion === "practicas") {
-          this.cabeceras = this.cabecerasPracticas;
-        } else {
-          this.cabeceras = this.cabecerasServicio;
-        }
-      })
-      .catch(error => {
-        if (error.response.status === 422) {
-          this.snackBarInfo("No hay una inscripción activa.");
-        } else {
-          this.snackBarError(
-            "No se pudieron obtener los proyectos. Vuelva a cargar la página."
-          );
-        }
-      });
+  async mounted() {
+    const response = await this.comprobarInscripcion();
+    console.log(response);
   }
 };

@@ -291,6 +291,43 @@ const routes = [
             });
           }
         }
+      },
+      {
+        path: "/consulta-profesores",
+        name: "ConsultarProfesores",
+        component: () =>
+          import(
+            /* webpackChunkName: "consultar-profesores" */ "../views/views-coordinador/ConsultaProfesor.vue"
+          ),
+        beforeEnter: (to, from, next) => {
+          if (rol() === "COORDINADOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
+        path: "/profesor",
+        name: "Profesor",
+        props: true,
+        component: () =>
+          import(
+            /* webpackChunkName: "profesor" */ "../views/views-coordinador/Profesor.vue"
+          ),
+        beforeEnter: (to, from, next) => {
+          if (rol() === "COORDINADOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
       }
     ]
   },

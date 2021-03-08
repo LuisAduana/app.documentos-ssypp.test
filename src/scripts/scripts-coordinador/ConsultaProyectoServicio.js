@@ -15,17 +15,18 @@ export default {
     proyectosInactivos: [],
     cabeceras: [
       { text: "Dependencia", value: "nombre_dependencia" },
+      { text: "Responsable", value: "nombre_responsable" },
       { text: "No. alumnos", value: "num_alumnos" },
       { text: "Actividades", value: "actividades" },
       { text: "Direccion", value: "direccion" },
-      { text: "Responsable", value: "nombre_responsable" },
       { text: "Horario", value: "horario" },
       { text: "Requisitos", value: "requisitos" },
+      { text: "Estado", value: "estado" },
       { text: "Edición", value: "edicion", sortable: false }
     ]
   }),
   methods: {
-    ...mapActions(["snackBarError", "snackBarExito"]),
+    ...mapActions(["snackBarError", "snackBarExito", "snackBarInfo"]),
 
     registrarProyectoServicio() {
       this.$router.push({ name: "ProyectoServicio" });
@@ -47,7 +48,6 @@ export default {
             : "NO ASIGNADO",
         id: this.proyectoEdit.id_proyecto
       };
-      console.log(datos);
       Coordinador.actDesactProyecto(datos)
         .then(() => {
           for (var i = 0; i < this.proyectosEnTabla.length; i++) {
@@ -68,16 +68,20 @@ export default {
           this.cerrarDialogo();
           this.snackBarExito("Se ha modificado con exitosamente");
         })
-        .catch(() => {
+        .catch(error => {
+          if (error.response.status === 422) {
+            this.snackBarInfo(error.response.data.errors.estado[0]);
+          } else {
+            this.snackBarError("Ocurrió un error, inténtelo de nuevo");
+          }
           this.esperandoRespuestaActDesact = false;
-          this.snackBarError("Ocurrió un error, inténtelo de nuevo");
         });
     },
     desactivarActivarProyecto(proyecto) {
       this.proyectoEdit = Object.assign({}, proyecto);
       proyecto.estado === "NO ASIGNADO"
-        ? (this.mensaje = "desactivar este proyecto?")
-        : (this.mensaje = "activar a este proyecto?");
+        ? (this.mensaje = "desactivar este proyecto")
+        : (this.mensaje = "activar a este proyecto");
       this.dialogoConfirmarActDesactivar = true;
     },
     cerrarDialogo() {

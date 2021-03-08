@@ -41,7 +41,7 @@ export default {
       var datos = {
         estado:
           this.responsableEdit.estado === "ACTIVO" ? "INACTIVO" : "ACTIVO",
-        id: this.responsableEdit.id
+        id: this.responsableEdit.dependencia_id
       };
       Coordinador.actDesactResponsable(datos)
         .then(() => {
@@ -67,7 +67,6 @@ export default {
           this.snackBarExito("Se ha desactivado exitosamente");
         })
         .catch(error => {
-          console.log(error.response);
           this.esperandoRespuestaActDesact = false;
           if (error.response.status === 422) {
             this.snackBarInfo(error.response.data.errors.estado[0]);
@@ -79,9 +78,8 @@ export default {
     desactivarActivarResponsable(responsable) {
       this.responsableEdit = Object.assign({}, responsable);
       responsable.estado === "ACTIVO"
-        ? (this.mensaje =
-            "desactivar a " + responsable.nombre_responsable + "?")
-        : (this.mensaje = "activar a " + responsable.nombre_responsable + "?");
+        ? (this.mensaje = "desactivar a " + responsable.nombre_responsable)
+        : (this.mensaje = "activar a " + responsable.nombre_responsable);
       this.dialogoConfirmarActDesactivar = true;
     },
     cerrarDialogo() {

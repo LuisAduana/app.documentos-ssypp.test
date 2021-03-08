@@ -1,20 +1,17 @@
 <template>
-  <v-main>
-    <router-view />
-
-    <v-app>
-      <v-snackbar
-        v-model="snackbar.activo"
-        :timeout="-1"
-        :color="snackbar.color"
-      >
-        {{ snackbar.mensaje }}
-        <v-btn text @click="snackbar.activo = false">
+  <v-app>
+    <v-main>
+      <router-view />
+    </v-main>
+    <v-snackbar v-model="snackbar.activo" :timeout="-1" :color="snackbar.color">
+      {{ snackbar.mensaje }}
+      <template v-slot:action="{ attrs }">
+        <v-btn text v-bind="attrs" @click="snackbar.activo = false">
           Aceptar
         </v-btn>
-      </v-snackbar>
-    </v-app>
-  </v-main>
+      </template>
+    </v-snackbar>
+  </v-app>
 </template>
 
 <script>
@@ -22,9 +19,6 @@ import { mapState } from "vuex";
 
 export default {
   name: "App",
-  data: () => ({
-    // Hola mundo
-  }),
   computed: {
     ...mapState(["snackbar"])
   }

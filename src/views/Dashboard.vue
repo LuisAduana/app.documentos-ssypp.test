@@ -132,9 +132,9 @@
       <router-view :key="$route.path" />
     </v-main>
 
-    <v-footer v-if="getInformacionDashboard" app dark color="primary">
+    <v-footer v-if="getUsuario" app dark color="primary">
       <v-row
-        v-if="getUsuario.usuario.rol_usuario == 'ALUMNO'"
+        v-if="getUsuario.usuario.rol_usuario === 'ALUMNO'"
         no-gutters
         align="center"
       >

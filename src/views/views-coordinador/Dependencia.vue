@@ -112,18 +112,18 @@
                 <v-btn
                   v-if="formDependencia.registro_dependencia"
                   :disabled="!validacion"
-                  :loading="esperandoRespuesta"
+                  :loading="getEsperandoRespuesta"
                   color="success"
-                  @click.prevent="registrarDependencia()"
+                  @click.prevent="registrar()"
                 >
                   Registrar
                 </v-btn>
                 <v-btn
                   v-else
                   :disabled="!validacion"
-                  :loading="esperandoRespuesta"
+                  :loading="getEsperandoRespuesta"
                   color="success"
-                  @click.prevent="modificarDependencia()"
+                  @click.prevent="modificar()"
                 >
                   Modificar
                 </v-btn>

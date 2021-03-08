@@ -1,4 +1,3 @@
-import Api from "../api/Usuario";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
@@ -36,13 +35,18 @@ export default {
       },
       {
         text: "Alumnos Inscritos",
-        icon: "mdi-account-edit",
+        icon: "mdi-school",
         ruta: "/consulta-alumnos-inscritos"
       },
       {
         text: "Documentos",
         icon: "mdi-file-multiple",
         ruta: "/consulta-proyectos-servicioss"
+      },
+      {
+        text: "Profesores",
+        icon: "mdi-face-profile",
+        ruta: "/consulta-profesores"
       },
       {
         text: "Inscripción",
@@ -69,39 +73,34 @@ export default {
     ]
   }),
   methods: {
-    ...mapActions(["saveAuth", "saveUsuario", "saveInformacionDashboard"]),
+    ...mapActions("moduloUsuario", [
+      "authUsuario",
+      "logoutUsuario",
+      "obtenerInformacionAlumno"
+    ]),
 
-    logout() {
-      Api.logout().then(() => {
-        localStorage.removeItem("auth");
-        localStorage.removeItem("rol");
+    async logout() {
+      const response = await this.logoutUsuario();
+      if (response.status === 200) {
         this.$router.push({ name: "Login" });
-      });
+      }
+    }
+  },
+  async mounted() {
+    const response = await this.authUsuario();
+    if (response.status === 200) {
+      if (this.getUsuario.rol_usuario === "ALUMNO") {
+        await this.obtenerInformacionAlumno({
+          id: this.getUsuario.id
+        });
+      }
+    } else if (response.status === 401) {
+      this.$router.push({ name: "Login" });
+    } else {
+      this.$router.push({ name: "NotFound" });
     }
   },
   computed: {
     ...mapGetters(["getUsuario", "getInformacionDashboard"])
-  },
-  mounted() {
-    Api.auth()
-      .then(response => {
-        this.$store.dispatch("saveUsuario", response.data);
-        if (response.data.rol_usuario === "ALUMNO") {
-          Api.obtenerInformacionAlumno({ id: response.data.id }).then(
-            response => {
-              this.$store.dispatch("saveInformacionDashboard", response.data);
-            }
-          );
-        }
-      })
-      .catch(error => {
-        if (error.response.status === 401) {
-          localStorage.removeItem("auth");
-          this.$router.push({ name: "Login" });
-        } else {
-          localStorage.removeItem("auth");
-          this.$router.push({ name: "NotFound" });
-        }
-      });
   }
 };

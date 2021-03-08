@@ -1,94 +1,41 @@
-import Coordinador from "../../api/Coordinador";
-import { mapActions } from "vuex";
+// eslint-disable-next-line prettier/prettier
+import { nombre_dependenciaRules, nombre_contactoRules, direccionRules, ciudadRules, correoRules, num_contactoRules, sectorRules, num_usRules } from "./../Rules";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   data: function() {
     return {
       validacion: true,
-      esperandoRespuesta: false,
       formDependencia: this.dependencia,
-      nombre_dependenciaRules: [
-        v => !!v || "Nombre de dependencia requerido",
-        v =>
-          (v && v.length <= 230) || "El nombre de dependencia demasiado largo"
-      ],
-      nombre_contactoRules: [
-        v => !!v || "Nombre de contacto requerido",
-        v => (v && v.length <= 200) || "El nombre de contacto demasiado largo"
-      ],
-      direccionRules: [
-        v => !!v || "Dirección requerida",
-        v => (v && v.length <= 250) || "La dirección es demasiado larga"
-      ],
-      ciudadRules: [
-        v => !!v || "La ciudad es requerida",
-        v => (v && v.length <= 120) || "La ciudad es demasiado larga"
-      ],
-      correoRules: [
-        v => !!v || "Correo requerido",
-        v => /.+@.+\..+/.test(v) || "El correo no es válido",
-        v => (v && v.length <= 150) || "El correo es demasiado largo"
-      ],
-      num_contactoRules: [
-        v => !!v || "Número de contacto requerido",
-        v => (v && v.length >= 10) || "El número es demasiado corto",
-        v => (v && v.length <= 20) || "El número es demasiado largo"
-      ],
-      sectorRules: [
-        v => !!v || "El sector es requerido",
-        v => (v && v.length <= 50) || "El sector es demasiado largo"
-      ],
-      num_usRules: [
-        v => !!v || "No. ususarios requerido",
-        v => (v && v.length <= 30) || "El número es demasiado largo"
-      ]
+      nombre_dependenciaRules: nombre_dependenciaRules,
+      nombre_contactoRules: nombre_contactoRules,
+      direccionRules: direccionRules,
+      ciudadRules: ciudadRules,
+      correoRules: correoRules,
+      num_contactoRules: num_contactoRules,
+      sectorRules: sectorRules,
+      num_usRules: num_usRules
     };
   },
 
   methods: {
-    ...mapActions(["snackBarError", "snackBarExito"]),
+    ...mapActions("moduloDependencia", [
+      "registrarDependencia",
+      "modificarDependencia"
+    ]),
 
-    modificarDependencia() {
-      console.log(this.formDependencia);
+    async modificar() {
       if (this.$refs.formularioDependencia.validate()) {
-        this.esperandoRespuesta = true;
-        Coordinador.modificarDependencia(this.formDependencia)
-          .then(() => {
-            this.esperandoRespuesta = false;
-            this.snackBarExito("Dependencia modificada exitosamente");
-          })
-          .catch(error => {
-            this.esperandoRespuesta = false;
-            if (error.response.status === 422) {
-              this.snackBarError(
-                error.response.data.errors.nombre_dependencia[0]
-              );
-            } else {
-              this.snackBarError("Ha ocurrido un error de modificación.");
-            }
-          });
+        await this.modificarDependencia(this.formDependencia);
       }
     },
 
-    registrarDependencia() {
+    async registrar() {
       if (this.$refs.formularioDependencia.validate()) {
-        this.esperandoRespuesta = true;
-        Coordinador.registrarDependencia(this.formDependencia)
-          .then(() => {
-            this.esperandoRespuesta = false;
-            this.$refs.formularioDependencia.reset();
-            this.snackBarExito("Dependencia registrada exitosamente!");
-          })
-          .catch(error => {
-            this.esperandoRespuesta = false;
-            if (error.response.status === 422) {
-              this.snackBarError(
-                "El nombre de la dependencia ya ha sido registrado"
-              );
-            } else {
-              this.snackBarError("Ha ocurrido un error, inténtelo nuevamente");
-            }
-          });
+        const response = await this.registrarDependencia(this.formDependencia);
+        if (response.status === 200) {
+          this.$refs.formularioDependencia.reset();
+        }
       }
     },
 
@@ -116,5 +63,8 @@ export default {
         };
       }
     }
+  },
+  computed: {
+    ...mapGetters(["getEsperandoRespuesta"])
   }
 };
