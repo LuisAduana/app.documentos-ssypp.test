@@ -2,18 +2,11 @@
   <v-app>
     <v-col align="center">
       <v-card max-width="1300">
-        <v-row>
-          <v-col align="left" cols="12" lg="1" md="1" sm="1" xs="12">
+        <v-stepper v-model="step">
+          <v-stepper-header>
             <v-btn icon @click="regresar()">
               <v-icon>mdi-keyboard-backspace</v-icon>
             </v-btn>
-          </v-col>
-          <v-col align="center" cols="12" lg="11" md="11" sm="11" xs="12">
-            <h1>Registro</h1>
-          </v-col>
-        </v-row>
-        <v-stepper v-model="step">
-          <v-stepper-header>
             <v-stepper-step :complete="step > 1" step="1">
               Comprobar Registro
             </v-stepper-step>
@@ -84,7 +77,7 @@
                             Cerrar
                           </v-btn>
                           <v-btn
-                            :loading="esperandoRespuesta"
+                            :loading="getEsperandoRespuestaDos"
                             color="blue darken-1"
                             text
                             @click.prevent="comprobarExistencia()"
@@ -99,7 +92,7 @@
               </v-row>
             </v-stepper-content>
             <v-stepper-content step="2">
-              <h1 v-if="esRegistro">Datos de usuario</h1>
+              <h1 v-if="formAlumno.esRegistro">Datos de usuario</h1>
               <h1 v-else>Confimar datos</h1>
               <v-form
                 ref="formularioAlumno"
@@ -219,9 +212,9 @@
                 <v-row>
                   <v-col align="center">
                     <v-btn
-                      v-if="esRegistro"
+                      v-if="formAlumno.esRegistro"
                       color="success"
-                      :loading="esperandoRespuesta"
+                      :loading="getEsperandoRespuesta"
                       @click.prevent="validarDatosRegistro()"
                     >
                       Siguiente
@@ -229,7 +222,7 @@
                     <v-btn
                       v-else
                       color="success"
-                      :loading="esperandoRespuesta"
+                      :loading="getEsperandoRespuesta"
                       @click.prevent="validarDatosRegistro()"
                     >
                       Confirmar
@@ -243,7 +236,7 @@
                 <v-card-title>
                   <h2>Proyectos disponibles</h2>
                   <v-divider class="mx-4" vertical></v-divider>
-                  <h5>Seleccione 3 proyectos máximo</h5>
+                  <h5>Seleccione 3 proyectos</h5>
                   <v-spacer></v-spacer>
                   <v-btn color="success" @click.prevent="validarProyectos()">
                     Terminar registro
@@ -273,255 +266,98 @@
                             text
                             @click="cerrarDialogoToken()"
                           >
-                            Cerrar
+                            Cancelar
                           </v-btn>
                           <v-btn
-                            :loading="esperandoRespuesta"
+                            :loading="getEsperandoRespuestaDos"
                             color="blue darken-1"
                             text
                             @click.prevent="registrarInscripcion()"
                           >
-                            Terminar
+                            Terminar inscripción
                           </v-btn>
                         </v-card-actions>
                       </v-form>
                     </v-card>
                   </v-dialog>
                 </v-card-title>
-                <v-data-table
-                  v-model="seleccionados"
-                  :headers="cabeceras"
-                  :items="proyectos"
-                  :items-per-page="10"
-                  :single-select="false"
-                  item-key="id"
-                  show-select
-                  class="elevation-1"
-                  :footer-props="{
-                    'items-per-page-text': 'Proyectos por pág.'
-                  }"
-                >
-                  <template v-slot:item.edicion="{ item }">
-                    <v-icon small @click="masInformacion(item)">
-                      mdi-eye
-                    </v-icon>
-                  </template>
-                  <template v-slot:no-data>
-                    No hay proyectos disponibles
-                  </template>
-                  <template v-slot:top>
-                    <v-dialog
-                      v-model="dialogoInformacionServicio"
-                      max-width="900px"
-                    >
-                      <v-card>
-                        <v-card-title> Información del proyecto </v-card-title>
-                        <v-card-text>
-                          <v-row>
-                            <v-col>
-                              <v-text-field
-                                v-model="proyectoServicio.nombre_dependencia"
-                                label="Dependencia"
-                                prepend-icon="mdi-office-building-outline"
-                                readonly
-                              >
-                              </v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row>
-                            <v-col>
-                              <v-text-field
-                                v-model="proyectoServicio.nombre_responsable"
-                                label="Responsable"
-                                prepend-icon="mdi-account"
-                                readonly
-                              >
-                              </v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row>
-                            <v-col>
-                              <v-text-field
-                                v-model="proyectoServicio.direccion"
-                                label="Dirección"
-                                readonly
-                              >
-                              </v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row>
-                            <v-col cols="12" sm="6" xs="12">
-                              <v-text-field
-                                v-model="proyectoServicio.actividades"
-                                label="Actividades"
-                                readonly
-                              ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" sm="6" xs="12">
-                              <v-text-field
-                                v-model="proyectoServicio.requisitos"
-                                label="Requisitos"
-                                readonly
-                              ></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row>
-                            <v-col cols="12" sm="6" xs="12">
-                              <v-text-field
-                                v-model="proyectoServicio.horario"
-                                label="Horario"
-                                readonly
-                              ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" sm="6" xs="12">
-                              <v-text-field
-                                v-model="proyectoServicio.num_alumnos"
-                                label="No. de alumnos"
-                                readonly
-                              ></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row>
-                            <v-col align="center">
-                              <v-btn
-                                color="success"
-                                @click="dialogoInformacionServicio = false"
-                              >
-                                Cerrar
-                              </v-btn>
-                            </v-col>
-                          </v-row>
-                        </v-card-text>
-                      </v-card>
-                    </v-dialog>
-                    <v-dialog
-                      v-model="dialogoInformacionPracticas"
-                      max-width="900px"
-                    >
-                      <v-card>
-                        <v-card-title> Información del proyecto </v-card-title>
-                        <v-card-text>
-                          <v-row>
-                            <v-col>
-                              <v-text-field
-                                v-model="proyectoPracticas.nombre_dependencia"
-                                label="Dependencia"
-                                prepend-icon="mdi-office-building-outline"
-                                readonly
-                              >
-                              </v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row>
-                            <v-col>
-                              <v-text-field
-                                v-model="proyectoPracticas.nombre_responsable"
-                                label="Responsable"
-                                prepend-icon="mdi-account"
-                                readonly
-                              >
-                              </v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row>
-                            <v-col>
-                              <v-text-field
-                                v-model="proyectoPracticas.nombre_proyecto"
-                                label="Nombre del proyecto"
-                                readonly
-                              ></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row>
-                            <v-col cols="12" sm="6" xs="12">
-                              <v-text-field
-                                v-model="proyectoPracticas.descripcion_general"
-                                label="Descripcion general del proyecto"
-                                readonly
-                              ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" sm="6" xs="12">
-                              <v-text-field
-                                v-model="proyectoPracticas.objetivo_general"
-                                label="Objetivo general del proyecto"
-                                readonly
-                              ></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row>
-                            <v-col cols="12" sm="6" xs="12">
-                              <v-text-field
-                                v-model="proyectoPracticas.objetivos_inmediatos"
-                                label="Objetivos inmediatos del proyecto"
-                                readonly
-                              ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" sm="6" xs="12">
-                              <v-text-field
-                                v-model="proyectoPracticas.objetivos_mediatos"
-                                label="Objetivos mediatos del proyecto"
-                                readonly
-                              ></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row>
-                            <v-col cols="12" sm="6" xs="12">
-                              <v-text-field
-                                v-model="proyectoPracticas.metodologia"
-                                label="Metodología"
-                                readonly
-                              ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" sm="6" xs="12">
-                              <v-text-field
-                                v-model="
-                                  proyectoPracticas.actividades_funcionales
-                                "
-                                label="Acttividades funcionales"
-                                readonly
-                              ></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row>
-                            <v-col cols="12" sm="6" xs="12">
-                              <v-text-field
-                                v-model="proyectoPracticas.responsabilidades"
-                                label="Responsabilidades"
-                                readonly
-                              ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" sm="6" xs="12">
-                              <v-text-field
-                                v-model="proyectoPracticas.duracion"
-                                label="Duracion"
-                                readonly
-                              ></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row>
-                            <v-col align="center">
-                              <v-text-field
-                                v-model="proyectoPracticas.horario"
-                                label="Horario"
-                                readonly
-                              ></v-text-field>
-                            </v-col>
-                          </v-row>
-                          <v-row>
-                            <v-col align="center">
-                              <v-btn
-                                color="success"
-                                @click="dialogoInformacionPracticas = false"
-                              >
-                                Cerrar
-                              </v-btn>
-                            </v-col>
-                          </v-row>
-                        </v-card-text>
-                      </v-card>
-                    </v-dialog>
-                  </template>
-                </v-data-table>
+                <v-divider></v-divider>
+                <v-row>
+                  <v-col cols="12" xl="4" lg="4" md="4" sm="4" xs="12">
+                    <v-card elevation="0">
+                      <v-card-title> <h5>Opción 1</h5> </v-card-title>
+                      <v-text-field
+                        v-model="getOpcionUno.nombre_dependencia"
+                        dense
+                        readonly
+                        label="Dependencia"
+                      >
+                      </v-text-field>
+                      <v-text-field
+                        v-model="getOpcionUno.nombre_responsable"
+                        dense
+                        readonly
+                        label="Responsable"
+                      >
+                      </v-text-field>
+                      <v-card-actions dense>
+                        <v-spacer></v-spacer>
+                        <v-icon @click="eliminarOpcion(1)" medium>
+                          mdi-close-circle-outline
+                        </v-icon>
+                      </v-card-actions>
+                    </v-card>
+                  </v-col>
+                  <v-col cols="12" xl="4" lg="4" md="4" sm="4" xs="12">
+                    <v-card elevation="0">
+                      <v-card-title> <h5>Opción 2</h5> </v-card-title>
+                      <v-text-field
+                        v-model="getOpcionDos.nombre_dependencia"
+                        dense
+                        readonly
+                        label="Dependencia"
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="getOpcionDos.nombre_responsable"
+                        dense
+                        readonly
+                        label="Responsable"
+                      >
+                      </v-text-field>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-icon @click="eliminarOpcion(2)" medium>
+                          mdi-close-circle-outline
+                        </v-icon>
+                      </v-card-actions>
+                    </v-card>
+                  </v-col>
+                  <v-col cols="12" xl="4" lg="4" md="4" sm="4" xs="12">
+                    <v-card elevation="0">
+                      <v-card-title> <h5>Opción 3</h5> </v-card-title>
+                      <v-text-field
+                        v-model="getOpcionTres.nombre_dependencia"
+                        dense
+                        readonly
+                        label="Dependencia"
+                      ></v-text-field>
+                      <v-text-field
+                        v-model="getOpcionTres.nombre_responsable"
+                        dense
+                        readonly
+                        label="Responsable"
+                      >
+                      </v-text-field>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-icon @click="eliminarOpcion(3)" medium>
+                          mdi-close-circle-outline
+                        </v-icon>
+                      </v-card-actions>
+                    </v-card>
+                  </v-col>
+                </v-row>
+                <tabla />
               </v-card>
             </v-stepper-content>
           </v-stepper-items>

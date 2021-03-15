@@ -1,66 +1,54 @@
 import Api from "../api/Coordinador";
+import Utils from "./StoreUtils";
 
 export default {
   namespaced: true,
+  state: {
+    esperandoNombres: false,
+    nombresDependencias: []
+  },
+  mutations: {
+    SET_NOMBRES_DEPENDENCIAS(state, nombresDependencias) {
+      state.nombresDependencias = nombresDependencias;
+    },
+    SET_ESPERANDO_NOMBRES(state, esperandoNombres) {
+      state.esperandoNombres = esperandoNombres;
+    }
+  },
   actions: {
     async obtenerDependencias() {
-      this.commit(
-        "SET_CABECERAS",
-        [
-          { text: "Nombre", value: "nombre_dependencia" },
-          { text: "Nombre de contacto", value: "nombre_contacto" },
-          { text: "Dirección", value: "direccion" },
-          { text: "Correo", value: "correo" },
-          { text: "No. Contacto", value: "num_contacto" },
-          { text: "Edición", value: "edicion", sortable: false, align: "right" }
-        ],
-        { root: true }
-      );
+      this.commit("SET_CABECERAS", Utils.cabecerasDependencias, { root: true });
       this.commit("SET_ESPERANDO_TABLA", true, { root: true });
-      const response = await Api.obtenerDependencias()
+      await Api.obtenerDependencias()
         .then(response => {
-          var itemsActivos = [];
-          var itemsInactivos = [];
-          for (var i = 0; i < response.data.length; i++) {
-            if (response.data[i].estado === "ACTIVO") {
-              itemsActivos.push(response.data[i]);
-            } else {
-              itemsInactivos.push(response.data[i]);
-            }
-          }
+          const itemsSeparados = Utils.separarItems(response.data);
           this.commit(
             "SET_ITEMS",
-            { itemsActivos: itemsActivos, itemsInactivos: itemsInactivos },
+            {
+              itemsActivos: itemsSeparados.act,
+              itemsInactivos: itemsSeparados.inact,
+              tipoTabla: "dependencias"
+            },
             { root: true }
           );
-          this.commit("SET_ITEMS_EN_TABLA", itemsActivos, { root: true });
-          return response;
         })
-        .catch(error => {
+        .catch(() => {
           this.commit("SET_ITEMS_EN_TABLA", [], { root: true });
-          this.dispatch(
-            "snackBarError",
-            "No se pudo cargar la información de la tabla, vuelva a cargar la página."
-          );
-          return error.response;
+          this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT_TABLE);
         });
       this.commit("SET_ESPERANDO_TABLA", false, { root: true });
-      return response;
     },
 
     async actDesactDependencia(context, formulario) {
       this.commit("SET_ESPERANDO_RESPUESTA", true, { root: true });
       const response = await Api.actDesactDependencia(formulario)
-        .then(response => {
-          this.dispatch("snackBarExito", "¡Se ha modificado exitosamente!");
-          return response;
+        .then(() => {
+          this.dispatch("snackBarExito", Utils.MESSAGE_EXITO_MODIFICAR);
+          return true;
         })
-        .catch(error => {
-          this.dispatch(
-            "snackBarError",
-            "No se pudo modificar la dependencia, inténtelo nuevamente."
-          );
-          return error.response;
+        .catch(() => {
+          this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT);
+          return false;
         });
       this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });
       return response;
@@ -68,36 +56,53 @@ export default {
 
     async modificarDependencia({ dispatch }, formulario) {
       this.commit("SET_ESPERANDO_RESPUESTA", true, { root: true });
-      const response = await Api.modificarDependencia(formulario)
-        .then(response => {
-          this.dispatch("snackBarExito", "¡Se ha modificado exitosamente!");
-          return response;
+      await Api.modificarDependencia(formulario)
+        .then(() => {
+          this.dispatch("snackBarExito", Utils.MESSAGE_EXITO_MODIFICAR);
         })
         .catch(error => {
           dispatch("mensajeErrores", error.response);
-          return error.response;
         });
       this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });
-      return response;
+    },
+
+    async obtenerNombresDependencias({ commit }) {
+      commit("SET_ESPERANDO_NOMBRES", true);
+      await Api.obtenerNombresDependencias()
+        .then(response => {
+          if (response.data.length == 0) {
+            this.dispatch(
+              "snackBarInfo",
+              "No existen dependencias, registre o active una."
+            );
+          }
+          commit("SET_NOMBRES_DEPENDENCIAS", response.data);
+        })
+        .catch(() => {
+          this.dispatch(
+            "snackBarError",
+            "No se pudieron consultar las dependencias. Recargue la página."
+          );
+        });
+      commit("SET_ESPERANDO_NOMBRES", false);
     },
 
     async registrarDependencia({ dispatch }, formulario) {
       this.commit("SET_ESPERANDO_RESPUESTA", true, { root: true });
       const response = await Api.registrarDependencia(formulario)
-        .then(response => {
-          this.dispatch("snackBarExito", "¡Se ha registrado exitosamente!");
-          return response;
+        .then(() => {
+          this.dispatch("snackBarExito", Utils.MESSAGE_EXITO_REGISTRO);
+          return true;
         })
         .catch(error => {
           dispatch("mensajeErrores", error.response);
-          return error.response;
+          return false;
         });
       this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });
       return response;
     },
 
     mensajeErrores(context, error) {
-      console.log(error);
       if (error.status === 422) {
         this.dispatch(
           "snackBarError",
@@ -109,6 +114,14 @@ export default {
           "Ha ocurrido un error, inténtelo nuevamente."
         );
       }
+    }
+  },
+  getters: {
+    getEsperandoNombresDependencias(state) {
+      return state.esperandoNombres;
+    },
+    getNombresDependencias(state) {
+      return state.nombresDependencias;
     }
   }
 };

@@ -1,15 +1,18 @@
 <template>
   <center>
     <h1>Not Found!</h1>
-    <p>
-      <a href="/">Go home?</a>
-    </p>
+    <v-btn @click="regresar">Regresar</v-btn>
   </center>
 </template>
 
 <script>
 export default {
-  name: "NotFound"
+  name: "NotFound",
+  methods: {
+    regresar() {
+      this.$router.back();
+    }
+  }
 };
 </script>
 

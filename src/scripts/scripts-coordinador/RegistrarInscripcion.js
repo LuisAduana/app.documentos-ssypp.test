@@ -1,12 +1,12 @@
-import Coordinador from "./../../api/Coordinador";
-import { mapActions } from "vuex";
+import tabla from "./../../components/TablaSeleccion";
+import Utils from "./../../store/StoreUtils";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   data: () => ({
     mensajeError: false,
     validacion: true,
     esperandoRespuesta: false,
-    singleSelect: false,
     step: 1,
     servicioBotonColor: "grey lighten-1",
     practicasBotonColor: "grey lighten-1",
@@ -15,40 +15,19 @@ export default {
     fecha_fin: "",
     hora_fin: "",
     fin_inscripcion: "",
-    year: "",
-    mount: "",
-    day: "",
-    hour: "",
-    minute: "",
-    second: "",
     tipoInscripcion: "",
     busqueda: "",
-    proyectos: [],
-    seleccionados: [],
-    cabeceras: [],
-    cabecerasServicio: [
-      { text: "Dependencia", value: "nombre_dependencia" },
-      { text: "No. alumnos", value: "num_alumnos" },
-      { text: "Actividades", value: "actividades" },
-      { text: "Direccion", value: "direccion" },
-      { text: "Responsable", value: "nombre_responsable" },
-      { text: "Horario", value: "horario" },
-      { text: "Requisitos", value: "requisitos" }
-    ],
-    cabecerasPracticas: [
-      { text: "Nombre del Proyecto", value: "nombre_proyecto" },
-      { text: "Nombre de Dependencia", value: "nombre_dependencia" },
-      { text: "Nombre del Responsable", value: "nombre_responsable" },
-      { text: "Metodología", value: "metodologia" },
-      { text: "Duración", value: "duracion" },
-      { text: "Horario", value: "horario" }
-    ],
     fin_inscripcionRules: [v => !!v || "Fin de inscripción requerido"]
   }),
   methods: {
-    ...mapActions(["snackBarError", "snackBarExito"]),
+    ...mapActions(["saveBusquedaEnTabla", "saveItemsEnTabla", "snackBarError"]),
+    ...mapActions("moduloProyectos", [
+      "obtenerProyectosServicio",
+      "obtenerProyectosPractica"
+    ]),
+    ...mapActions("moduloInscripcion", ["registrarInscripcion"]),
 
-    registrarInscripcion() {
+    async registrar() {
       if (this.$refs.formularioInscripcion.validate()) {
         var fechaUno = new Date(this.inscripcion_inicio);
         var fechaDos = new Date(this.fin_inscripcion);
@@ -57,73 +36,25 @@ export default {
           this.mensajeValidacion =
             "La inscripción no puede finalizar en el pasado.";
         } else {
-          this.esperandoRespuesta = true;
           var datos = {
             inscripcion_inicio: this.inscripcion_inicio,
             fin_inscripcion: this.fin_inscripcion,
             tipo_inscripcion: this.tipoInscripcion,
-            proyectos: this.seleccionados
+            proyectos: this.getItemsSeleccionados
           };
-          Coordinador.registrarInscripcion(datos)
-            .then(() => {
-              this.snackBarExito(
-                "Se ha registrado la inscripción correctamente"
-              );
-              this.$router.push({ name: "ConsultaInscripcion" });
-            })
-            .catch(error => {
-              if (error.response.status === 422) {
-                this.snackBarError(error.response.data.errors.inscripcion[0]);
-              } else {
-                this.snackBarError(
-                  "Ha ocurrido un error, inténtelo nuevamente."
-                );
-              }
-            })
-            .finally(() => {
-              this.esperandoRespuesta = false;
-            });
+          if (await this.registrarInscripcion(datos)) {
+            this.$router.push({ name: "ConsultaInscripcion" });
+          }
         }
       }
     },
 
-    consultarProyectosServicio() {
-      this.esperandoRespuesta = true;
-      Coordinador.obtenerProyectosServicio({
-        tipo_consulta: "NO ASIGNADO"
-      })
-        .then(response => {
-          this.seleccionados = [];
-          this.cabeceras = this.cabecerasServicio;
-          this.proyectos = response.data;
-        })
-        .catch(() => {
-          this.snackBarError(
-            "No se pudieron consultar los proyectos. Inténtelo de nuevo."
-          );
-        })
-        .finally(() => {
-          this.esperandoRespuesta = false;
-        });
+    async consultarProyectosServicio() {
+      await this.obtenerProyectosServicio({ tipo_consulta: "ACTIVO" });
     },
-    consultarProyectosPracticas() {
-      this.esperandoRespuesta = true;
-      Coordinador.obtenerProyectoPractica({
-        tipo_consulta: "NO ASIGNADO"
-      })
-        .then(response => {
-          this.seleccionados = [];
-          this.cabeceras = this.cabecerasPracticas;
-          this.proyectos = response.data;
-        })
-        .catch(() => {
-          this.snackBarError(
-            "No se pudieron consultar los proyectos. Inténtelo de nuevo."
-          );
-        })
-        .finally(() => {
-          this.esperandoRespuesta = false;
-        });
+
+    async consultarProyectosPracticas() {
+      await this.obtenerProyectosPractica({ tipo_consulta: "ACTIVO" });
     },
 
     siguientePaso() {
@@ -132,7 +63,7 @@ export default {
         this.practicasBotonColor = "red lighten-1";
         this.snackBarError("Seleccione el tipo de proyectos.");
       } else {
-        if (this.seleccionados.length === 0) {
+        if (this.getItemsSeleccionados.length === 0) {
           this.snackBarError("Seleccione al menos un proyecto.");
         } else {
           this.asignarFecha();
@@ -159,40 +90,12 @@ export default {
       this.$router.back();
     },
     asignarFecha() {
-      this.year = new Date().getFullYear();
-      this.mount =
-        new Date().getMonth() < 9
-          ? "0" + (new Date().getMonth() + 1)
-          : new Date().getMonth() + 1;
-      this.day =
-        new Date().getDate() <= 9
-          ? "0" + new Date().getDate()
-          : new Date().getDate();
-      this.hour =
-        new Date().getHours() <= 9
-          ? "0" + new Date().getHours()
-          : new Date().getHours();
-      this.minute =
-        new Date().getMinutes() <= 9
-          ? "0" + new Date().getMinutes()
-          : new Date().getMinutes();
-      this.second =
-        new Date().getSeconds() <= 9
-          ? "0" + new Date().getSeconds()
-          : new Date().getSeconds();
       this.inscripcion_inicio =
-        this.year +
-        "-" +
-        this.mount +
-        "-" +
-        this.day +
-        " " +
-        this.hour +
-        ":" +
-        this.minute +
-        ":" +
-        this.second;
+        Utils.getFechaActual() + " " + Utils.getHoraActual();
     }
+  },
+  mounted() {
+    this.saveItemsEnTabla([]);
   },
   watch: {
     fecha_fin() {
@@ -209,17 +112,19 @@ export default {
       this.mensajeValidacion = "";
       if (this.fecha_fin === "") {
         this.fin_inscripcion =
-          this.year +
-          "-" +
-          this.mount +
-          "-" +
-          this.day +
-          " " +
-          this.hora_fin +
-          ":00";
+          Utils.getFechaActual() + " " + this.hora_fin + ":00";
       } else {
         this.fin_inscripcion = this.fecha_fin + " " + this.hora_fin + ":00";
       }
+    },
+    busqueda() {
+      this.saveBusquedaEnTabla(this.busqueda);
     }
+  },
+  computed: {
+    ...mapGetters(["getEsperandoRespuesta", "getItemsSeleccionados"])
+  },
+  components: {
+    tabla
   }
 };

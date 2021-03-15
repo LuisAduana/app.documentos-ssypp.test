@@ -1,9 +1,9 @@
 <template>
   <v-col align="center">
-    <v-card max-width="1000">
+    <v-card max-width="1200">
       <v-row>
         <v-col align="left" cols="12" xl="1" lg="1" md="1" sm="1" xs="12">
-          <v-btn icon @click="regresar()">
+          <v-btn icon @click="regresar">
             <v-icon>mdi-keyboard-backspace</v-icon>
           </v-btn>
         </v-col>
@@ -58,36 +58,14 @@
                   single-line
                   hide-details
                 ></v-text-field>
-              </v-card-title>
-              <v-col>
-                <v-data-table
-                  v-model="seleccionados"
-                  :headers="cabeceras"
-                  :items="proyectos"
-                  :single-select="singleSelect"
-                  :search="busqueda"
-                  :loading="esperandoRespuesta"
-                  item-key="id"
-                  show-select
-                  class="elevation-1"
-                  :footer-props="{
-                    'items-per-page-text': 'proyectos por pág.'
-                  }"
-                >
-                  <template v-slot:no-results>
-                    No se encontraron coincidencias
-                  </template>
-                  <template v-slot:no-data>No existen registros</template>
-                </v-data-table>
-              </v-col>
-            </v-card>
-            <v-row>
-              <v-col>
+                <v-spacer></v-spacer>
                 <v-btn color="success" @click.prevent="siguientePaso()">
                   Siguiente
                 </v-btn>
-              </v-col>
-            </v-row>
+              </v-card-title>
+              <v-divider></v-divider>
+              <tabla />
+            </v-card>
           </v-stepper-content>
           <v-stepper-content step="2">
             <v-form
@@ -138,9 +116,9 @@
                 <v-col>
                   <v-btn
                     :disabled="!validacion"
-                    :loading="esperandoRespuesta"
+                    :loading="getEsperandoRespuesta"
                     color="success"
-                    @click.prevent="registrarInscripcion()"
+                    @click.prevent="registrar()"
                   >
                     Registrar
                   </v-btn>

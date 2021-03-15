@@ -1,28 +1,26 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import Store from "./../store/index";
+import Api from "./../api/Usuario";
 
 Vue.use(VueRouter);
 
-function auth() {
-  return localStorage.getItem("auth");
-}
-
 function rol() {
-  return localStorage.getItem("rol");
+  return Store.state.usuario.rol_usuario;
 }
 
 const routes = [
   {
     path: "/",
     name: "Login",
-    meta: { guestOnly: true },
+    meta: { requiresAuth: false },
     component: () =>
       import(/* webpackChunkName: "login" */ "../views/Login.vue")
   },
   {
     path: "/registro",
     name: "Registro",
-    meta: { guestOnly: true },
+    meta: { requiresAuth: false },
     component: () =>
       import(
         /* webpackChunkName: "registro" */ "../views/views-alumno/Registro.vue"
@@ -328,6 +326,24 @@ const routes = [
             });
           }
         }
+      },
+      {
+        path: "/consulta-alumnos",
+        name: "ConsultaAlumnos",
+        component: () =>
+          import(
+            /* webpackChunkName: "consulta-alumnos" */ "../views/views-profesor/ConsultaAlumnos.vue"
+          ),
+        beforeEnter: (to, from, next) => {
+          if (rol() === "PROFESOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
       }
     ]
   },
@@ -347,20 +363,11 @@ const router = new VueRouter({
   routes
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!auth()) {
+    if (!(await autenticarse())) {
       next({
         path: "/",
-        query: { redirect: to.fullPath }
-      });
-    } else {
-      next();
-    }
-  } else if (to.matched.some(record => record.meta.guestOnly)) {
-    if (auth()) {
-      next({
-        path: "/dashboard",
         query: { redirect: to.fullPath }
       });
     } else {
@@ -370,5 +377,21 @@ router.beforeEach((to, from, next) => {
     next();
   }
 });
+
+async function autenticarse() {
+  if (Store.state.usuario === null) {
+    const auth = Api.auth()
+      .then(response => {
+        Store.state.usuario = response.data;
+        return true;
+      })
+      .catch(() => {
+        return false;
+      });
+    return auth;
+  } else {
+    return true;
+  }
+}
 
 export default router;

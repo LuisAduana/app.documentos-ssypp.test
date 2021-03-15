@@ -29,7 +29,8 @@
               <v-col>
                 <v-autocomplete
                   v-model="nombre_dependencia"
-                  :items="nombres_dependencias"
+                  :items="getNombresDependencias"
+                  :loading="getEsperandoNombresDependencias"
                   :rules="nombre_dependenciaRules"
                   label="Dependencia *"
                   no-data-text="No se encontraron coincidencias"
@@ -43,9 +44,9 @@
               <v-col>
                 <v-autocomplete
                   v-model="formProyectoServicio.nombre_responsable"
-                  :items="nombres_responsables"
+                  :items="getNombresResponsables"
+                  :loading="getEsperandoNombresResponsables"
                   :rules="nombre_responsableRules"
-                  :loading="esperandoNombresResponsable"
                   label="Responsable *"
                   no-data-text="No se encontraron coincidencias"
                   required
@@ -95,18 +96,18 @@
                 <v-btn
                   v-if="formProyectoServicio.registro_proyecto"
                   :disabled="!validacion"
-                  :loading="esperandoRespuesta"
+                  :loading="getEsperandoRespuesta"
                   color="success"
-                  @click.prevent="registrarProyectoServicio()"
+                  @click.prevent="registrar()"
                 >
                   Registrar
                 </v-btn>
                 <v-btn
                   v-else
                   :disabled="!validacion"
-                  :loading="esperandoRespuesta"
+                  :loading="getEsperandoRespuesta"
                   color="success"
-                  @click.prevent="modificarProyectoServicio()"
+                  @click.prevent="modificar()"
                 >
                   Modificar
                 </v-btn>

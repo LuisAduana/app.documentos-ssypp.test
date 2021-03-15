@@ -24,12 +24,7 @@ export default {
       });
     },
     async cambiarDependencia(item) {
-      const response = await this.actDesactDependencia(item);
-      if (response.status === 200) {
-        return true;
-      } else {
-        return false;
-      }
+      return await this.actDesactDependencia(item);
     }
   },
   async mounted() {

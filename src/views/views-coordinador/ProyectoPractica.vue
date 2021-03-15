@@ -29,7 +29,8 @@
               <v-col>
                 <v-autocomplete
                   v-model="nombre_dependencia"
-                  :items="nombres_dependencias"
+                  :items="getNombresDependencias"
+                  :loading="getEsperandoNombresDependencias"
                   :rules="nombre_dependenciaRules"
                   label="Dependencia *"
                   no-data-text="No se encontraron coincidencias"
@@ -43,9 +44,9 @@
               <v-col>
                 <v-autocomplete
                   v-model="formProyectoPractica.nombre_responsable"
-                  :items="nombres_responsables"
+                  :items="getNombresResponsables"
+                  :loading="getEsperandoNombresResponsables"
                   :rules="nombre_responsableRules"
-                  :loading="esperandoNombresResponsable"
                   label="Responsable *"
                   no-data-text="No se encontraron coincidencias"
                   required
@@ -112,7 +113,7 @@
                 <v-text-field
                   v-model="formProyectoPractica.actividades_funcionales"
                   :rules="actividades_funcionalesRules"
-                  label="Acttividades funcionales"
+                  label="Actividades funcionales"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -146,18 +147,18 @@
                 <v-btn
                   v-if="formProyectoPractica.registro_proyecto"
                   :disabled="!validacion"
-                  :loading="esperandoRespuesta"
+                  :loading="getEsperandoRespuesta"
                   color="success"
-                  @click.prevent="registrarProyectoPractica()"
+                  @click.prevent="registrar()"
                 >
                   Registrar
                 </v-btn>
                 <v-btn
                   v-else
                   :disabled="!validacion"
-                  :loading="esperandoRespuesta"
+                  :loading="getEsperandoRespuesta"
                   color="success"
-                  @click.prevent="modificarProyectoPractica()"
+                  @click.prevent="modificar()"
                 >
                   Modificar
                 </v-btn>

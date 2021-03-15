@@ -7,119 +7,46 @@
       color="secundary"
       v-if="getUsuario"
     >
-      <div v-if="getUsuario.usuario.rol_usuario === 'ADMINISTRADOR'">
-        <v-list-item>
-          <v-list-item-icon>
-            <v-btn icon @click="drawer = !drawer">
-              <v-icon>mdi-menu</v-icon>
-            </v-btn>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title class="title">
-              Administrador
-            </v-list-item-title>
-            <v-list-item-subtitle>
-              Menú
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-        <v-divider></v-divider>
-        <v-list>
-          <v-list-item-group v-model="itemSeleccionado" color="primary">
-            <v-list-item
-              v-for="(item, i) in menuAdministrador"
-              :key="i"
-              :to="item.ruta"
-              link
-            >
-              <v-list-item-icon>
-                <v-icon v-text="item.icon"></v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title v-text="item.text"></v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-      </div>
-      <div v-else-if="getUsuario.usuario.rol_usuario === 'COORDINADOR'">
-        <v-list-item>
-          <v-list-item-icon>
-            <v-btn icon @click="drawer = !drawer">
-              <v-icon>mdi-menu</v-icon>
-            </v-btn>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title class="title">
-              Coordinador
-            </v-list-item-title>
-            <v-list-item-subtitle>
-              Menú
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-        <v-divider></v-divider>
-        <v-list>
-          <v-list-item-group v-model="itemSeleccionado" color="primary">
-            <v-list-item
-              v-for="(item, i) in menuCoordinador"
-              :key="i"
-              :to="item.ruta"
-              link
-            >
-              <v-list-item-icon>
-                <v-icon v-text="item.icon"></v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title v-text="item.text"></v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-      </div>
-      <div v-else-if="getUsuario.usuario.rol_usuario === 'ALUMNO'">
-        <v-list-item>
-          <v-list-item-icon>
-            <v-btn icon @click="drawer = !drawer">
-              <v-icon>mdi-menu</v-icon>
-            </v-btn>
-          </v-list-item-icon>
-          <v-list-item-content>
-            <v-list-item-title class="title">
-              Alumno
-            </v-list-item-title>
-            <v-list-item-subtitle>
-              Menú
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-        <v-divider></v-divider>
-        <v-list>
-          <v-list-item-group v-model="itemSeleccionado" color="primary">
-            <v-list-item
-              v-for="(item, i) in menuAlumno"
-              :key="i"
-              :to="item.ruta"
-              link
-            >
-              <v-list-item-icon>
-                <v-icon v-text="item.icon"></v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title v-text="item.text"></v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-      </div>
+      <v-list-item>
+        <v-list-item-icon>
+          <v-btn icon @click="drawer = !drawer">
+            <v-icon>mdi-menu</v-icon>
+          </v-btn>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title class="title">
+            {{ getUsuario.rol_usuario }}
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            Menú
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-divider></v-divider>
+      <v-list>
+        <v-list-item-group
+          v-if="menu != []"
+          v-model="itemSeleccionado"
+          color="primary"
+        >
+          <v-list-item v-for="(item, i) in menu" :key="i" :to="item.ruta" link>
+            <v-list-item-icon>
+              <v-icon v-text="item.icon"></v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="item.text"></v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
     </v-navigation-drawer>
 
     <v-app-bar v-if="getUsuario" app color="primary" dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title v-if="getUsuario">
-        {{ getUsuario.usuario.nombres }}
-        {{ getUsuario.usuario.apellido_paterno }}
-        {{ getUsuario.usuario.apellido_materno }}
+        {{ getUsuario.nombres }}
+        {{ getUsuario.apellido_paterno }}
+        {{ getUsuario.apellido_materno }}
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-btn href="#" @click.prevent="logout()" target="_blank" text>
@@ -134,7 +61,7 @@
 
     <v-footer v-if="getUsuario" app dark color="primary">
       <v-row
-        v-if="getUsuario.usuario.rol_usuario === 'ALUMNO'"
+        v-if="getUsuario.rol_usuario === 'ALUMNO' && getInformacionDashboard"
         no-gutters
         align="center"
       >

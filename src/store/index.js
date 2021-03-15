@@ -1,37 +1,57 @@
+import ModuloAlumno from "./ModuloAlumno";
+import ModuloDependencia from "./ModuloDependencia";
+import ModuloInscripcion from "./ModuloInscripcion";
+import ModuloProfesor from "./ModuloProfesor";
+import ModuloProyectos from "./ModuloProyectos";
+import ModuloResponsable from "./ModuloResponsable";
+import ModuloUsuario from "./ModuloUsuario";
 import Vue from "vue";
 import Vuex from "vuex";
-import ModuloDependencia from "./ModuloDependencia";
-import ModuloRegistro from "./ModuloRegistro";
-import ModuloUsuario from "./ModuloUsuario";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     esperandoRespuesta: false,
+    esperandoRespuestaDos: false,
     esperandoTabla: false,
     soloInactivos: false,
+    dialogoAsignarProyecto: false,
     usuario: null,
     informacionDashboard: null,
     busquedaEnTabla: "",
+    tipoTabla: "",
+    tipoSeleccion: false,
+    rolUsuario: "",
+    itemsSeleccionados: [],
     itemsActivos: [],
     itemsInactivos: [],
     itemsEnTabla: [],
     cabeceras: [],
-    snackbar: { activo: false, color: "", mensaje: "" }
+    cabecerasDos: [],
+    snackbars: []
   },
   mutations: {
     SET_USUARIO(state, usuario) {
       state.usuario = usuario;
     },
+    SET_TIPO_SELECCION(state, tipoSeleccion) {
+      state.tipoSeleccion = tipoSeleccion;
+    },
+    SET_ROL_USUARIO(state, rolUsuario) {
+      state.rolUsuario = rolUsuario;
+    },
     SET_INFORMACION_DASHBOARD(state, informacionDashboard) {
       state.informacionDashboard = informacionDashboard;
     },
     SET_SNACKBAR(state, snackbar) {
-      state.snackbar = snackbar;
+      state.snackbars = state.snackbars.concat(snackbar);
     },
     SET_ESPERANDO_RESPUESTA(state, esperandoRespuesta) {
       state.esperandoRespuesta = esperandoRespuesta;
+    },
+    SET_ESPERANDO_RESPUESTA_DOS(state, esperandoRespuestaDos) {
+      state.esperandoRespuestaDos = esperandoRespuestaDos;
     },
     SET_ESPERANDO_TABLA(state, esperandoTabla) {
       state.esperandoTabla = esperandoTabla;
@@ -39,9 +59,14 @@ export default new Vuex.Store({
     SET_CABECERAS(state, cabeceras) {
       state.cabeceras = cabeceras;
     },
-    SET_ITEMS(state, { itemsActivos, itemsInactivos }) {
+    SET_CABECERAS_DOS(state, cabeceras) {
+      state.cabecerasDos = cabeceras;
+    },
+    SET_ITEMS(state, { itemsActivos, itemsInactivos, tipoTabla }) {
       state.itemsActivos = itemsActivos;
       state.itemsInactivos = itemsInactivos;
+      state.itemsEnTabla = itemsActivos;
+      state.tipoTabla = tipoTabla;
     },
     SET_ITEMS_EN_TABLA(state, items) {
       state.itemsEnTabla = items;
@@ -60,18 +85,37 @@ export default new Vuex.Store({
     },
     SET_SOLO_INACTIVOS(state, soloInactivos) {
       state.soloInactivos = soloInactivos;
+    },
+    SET_ITEMS_SELECCIONADOS(state, itemsSeleccionados) {
+      state.itemsSeleccionados = itemsSeleccionados;
+    },
+    SET_DIALOGO_ASIGNAR_PROYECTO(state, dialogoAsignarProyecto) {
+      state.dialogoAsignarProyecto = dialogoAsignarProyecto;
+    },
+    ELIMINAR_ITEM_EN_TABLA(state, posicion) {
+      state.itemsEnTabla.splice(posicion, 1);
     }
   },
   actions: {
+    deleteItemEnTabla({ commit }, posicion) {
+      commit("ELIMINAR_ITEM_EN_TABLA", posicion);
+    },
     saveUsuario({ commit }, usuario) {
-      commit("SET_USUARIO", {
-        usuario: usuario
-      });
+      commit("SET_USUARIO", usuario);
+    },
+    saveRolUsuario({ commit }, rolUsuario) {
+      commit("SET_ROL_USUARIO", rolUsuario);
     },
     saveInformacionDashboard({ commit }, informacionDashboard) {
       commit("SET_INFORMACION_DASHBOARD", {
         informacionDashboard: informacionDashboard
       });
+    },
+    saveTipoSeleccion({ commit }, tipoSeleccion) {
+      commit("SET_TIPO_SELECCION", tipoSeleccion);
+    },
+    saveDialogoAsignarProyecto({ commit }, dialogoAsignarProyecto) {
+      commit("SET_DIALOGO_ASIGNAR_PROYECTO", dialogoAsignarProyecto);
     },
     saveBusquedaEnTabla({ commit }, busquedaEnTabla) {
       commit("SET_BUSQUEDA_EN_TABLA", busquedaEnTabla);
@@ -84,8 +128,17 @@ export default new Vuex.Store({
         commit("SET_ITEMS_EN_TABLA", state.itemsActivos);
       }
     },
+    saveItemsEnTabla({ commit }) {
+      commit("SET_ITEMS_EN_TABLA", []);
+    },
     saveCambioTabla({ commit }, { posicion, estado }) {
       commit("SET_CAMBIO_TABLA", { posicion, estado });
+    },
+    saveCabeceras({ commit }) {
+      commit("SET_CABECERAS", []);
+    },
+    saveItemsSeleccionados({ commit }, itemsSeleccionados) {
+      commit("SET_ITEMS_SELECCIONADOS", itemsSeleccionados);
     },
     snackBarError({ commit }, message) {
       commit("SET_SNACKBAR", {
@@ -119,11 +172,17 @@ export default new Vuex.Store({
     getEsperandoRespuesta(state) {
       return state.esperandoRespuesta;
     },
+    getEsperandoRespuestaDos(state) {
+      return state.esperandoRespuestaDos;
+    },
     getEsperandoTabla(state) {
       return state.esperandoTabla;
     },
     getCabeceras(state) {
       return state.cabeceras;
+    },
+    getCabecerasDos(state) {
+      return state.cabecerasDos;
     },
     getItemsEnTabla(state) {
       return state.itemsEnTabla;
@@ -133,11 +192,27 @@ export default new Vuex.Store({
     },
     getSoloInactivos(state) {
       return state.soloInactivos;
+    },
+    getTipoTabla(state) {
+      return state.tipoTabla;
+    },
+    getItemsSeleccionados(state) {
+      return state.itemsSeleccionados;
+    },
+    getDialogoAsignarProyecto(state) {
+      return state.dialogoAsignarProyecto;
+    },
+    getTipoSeleccion(state) {
+      return state.tipoSeleccion;
     }
   },
   modules: {
-    moduloRegistro: ModuloRegistro,
+    moduloAlumno: ModuloAlumno,
     moduloDependencia: ModuloDependencia,
+    moduloInscripcion: ModuloInscripcion,
+    moduloProfesor: ModuloProfesor,
+    moduloProyectos: ModuloProyectos,
+    moduloResponsable: ModuloResponsable,
     moduloUsuario: ModuloUsuario
   }
 });

@@ -65,8 +65,9 @@
               <v-col cols="12">
                 <v-autocomplete
                   v-model="formResponsable.nombre_dependencia"
-                  :items="nombres_dependencias"
+                  :items="getNombresDependencias"
                   :rules="nombre_dependenciaRules"
+                  :loading="getEsperandoNombresDependencias"
                   label="Dependencia *"
                   no-data-text="No se encontraron coincidencias"
                   required
@@ -80,16 +81,16 @@
                 <v-btn
                   v-if="formResponsable.registro_responsable"
                   :disabled="!validacion"
-                  :loading="esperandoRespuesta"
+                  :loading="getEsperandoRespuesta"
                   color="success"
-                  @click.prevent="registrarResponsable()"
+                  @click.prevent="registrar()"
                 >
                   Registrar
                 </v-btn>
                 <v-btn
                   v-else
                   :disabled="!validacion"
-                  :loading="esperandoRespuesta"
+                  :loading="getEsperandoRespuesta"
                   color="success"
                   @click.prevent="modificarResponsable()"
                 >

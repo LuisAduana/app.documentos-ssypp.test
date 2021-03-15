@@ -1,47 +1,102 @@
 <template>
   <v-col align="center">
-    <v-card max-width="1200" elevation="0">
-      <v-col>
-        <v-row>
-          <v-col align="left" cols="12" xl="1" lg="1" md="1" sm="1" xs="12">
-            <v-btn icon @click="regresar()">
-              <v-icon>mdi-keyboard-backspace</v-icon>
-            </v-btn>
-          </v-col>
-          <v-col
-            align="center"
-            cols="12"
-            xl="11"
-            lg="11"
-            md="11"
-            sm="11"
-            xs="12"
-          >
-            <h1 v-if="formProfesor.registro_profesor">
-              Registrar Profesor
-            </h1>
-            <h1 v-else>
-              Modificar Profesor
-            </h1>
-          </v-col>
-        </v-row>
-        <v-stepper v-model="step">
-          <v-stepper-header>
-            <v-stepper-step :complete="step > 1" step="1">
-              Datos personales
-            </v-stepper-step>
-            <v-divider></v-divider>
-            <v-stepper-step step="2">
-              Selección de alumnos
-            </v-stepper-step>
-          </v-stepper-header>
-          <v-stepper-items>
-            <v-stepper-content step="1">
-              <v-form
-                ref="formularioProfesor"
-                v-model="validacion"
-                lazy-validation
-              >
+    <v-card max-width="1200">
+      <v-row>
+        <v-col align="left" cols="12" xl="1" lg="1" md="1" sm="1" xs="12">
+          <v-btn icon @click="regresar">
+            <v-icon>mdi-keyboard-backspace</v-icon>
+          </v-btn>
+        </v-col>
+        <v-col align="center" cols="12" xl="11" lg="11" md="11" sm="11" xs="12">
+          <h1 v-if="formProfesor.registro_profesor">
+            Registrar Profesor
+          </h1>
+          <h1 v-else>
+            Modificar Profesor
+          </h1>
+        </v-col>
+      </v-row>
+      <v-stepper v-model="step" non-linear>
+        <v-stepper-header v-if="!profesor.registro_profesor">
+          <v-stepper-step :complete="step > 1" step="1" editable>
+            Datos personales
+          </v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step step="2" editable>
+            Selección de alumnos
+          </v-stepper-step>
+        </v-stepper-header>
+        <v-stepper-header v-else>
+          <v-stepper-step :complete="step > 1" step="1">
+            Datos personales
+          </v-stepper-step>
+          <v-divider></v-divider>
+          <v-stepper-step step="2">
+            Selección de alumnos
+          </v-stepper-step>
+        </v-stepper-header>
+        <v-stepper-items>
+          <v-stepper-content step="1">
+            <v-form
+              ref="formularioPassword"
+              v-model="validacionPassword"
+              lazy-validation
+            >
+              <v-container v-if="!profesor.registro_profesor">
+                <v-row no-gutters>
+                  <v-col align="left">
+                    <h4>Contraseña</h4>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="12" xs="12" sm="5" md="5">
+                    <v-text-field
+                      v-model="formPassword.password"
+                      :rules="passwordRules"
+                      type="password"
+                      label="Contraseña *"
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" xs="12" sm="5" md="5">
+                    <v-text-field
+                      v-model="resetPasswordConfirmacion"
+                      :rules="[
+                        v => !!v || 'Confirme la contraseña',
+                        this.formPassword.password ===
+                          this.resetPasswordConfirmacion ||
+                          'Las contraseñas no coinciden'
+                      ]"
+                      type="password"
+                      label="Confirmar contraseña *"
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" xs="12" sm="2" md="2">
+                    <v-btn
+                      :disabled="!validacionPassword"
+                      color="success"
+                      :loading="getEsperandoRespuestaDos"
+                      @click="modificarPassword"
+                    >
+                      Cambiar
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-form>
+            <v-form
+              ref="formularioProfesor"
+              v-model="validacion"
+              lazy-validation
+            >
+              <v-divider v-if="!profesor.registro_profesor"></v-divider>
+              <v-container>
+                <v-row no-gutters v-if="!profesor.registro_profesor">
+                  <v-col align="left">
+                    <h4>Datos</h4>
+                  </v-col>
+                </v-row>
                 <v-row>
                   <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
                     <v-text-field
@@ -66,7 +121,7 @@
                     ></v-text-field>
                   </v-col>
                 </v-row>
-                <v-row>
+                <v-row v-if="profesor.registro_profesor">
                   <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
                     <v-text-field
                       v-model="formProfesor.password"
@@ -155,8 +210,8 @@
                       v-if="profesor.registro_profesor"
                       :disabled="!validacion"
                       color="success"
-                      :loading="esperandoRespuesta"
-                      @click.prevent="validarDatosRegistro()"
+                      :loading="getEsperandoRespuesta"
+                      @click.prevent="validarDatosRegistro"
                     >
                       Siguiente
                     </v-btn>
@@ -164,61 +219,53 @@
                       v-else
                       :disabled="!validacion"
                       color="success"
-                      :loading="esperandoRespuesta"
-                      @click.prevent="modificarProfesor()"
+                      :loading="getEsperandoRespuesta"
+                      @click.prevent="modificar"
                     >
                       Modificar
                     </v-btn>
                   </v-col>
                 </v-row>
-              </v-form>
-            </v-stepper-content>
-            <v-stepper-content step="2">
-              <v-card elevation="0">
-                <v-card-title>
-                  <h2>Alumnos</h2>
-                  <v-divider class="mx-4" vertical></v-divider>
-                  <v-spacer></v-spacer>
-                  <v-text-field
-                    v-model="busqueda"
-                    append-icon="mdi-magnify"
-                    label="Buscar"
-                    single-line
-                    hide-details
-                  ></v-text-field>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="success"
-                    :loading="esperandoRespuesta"
-                    @click="asignarAlumnos()"
-                  >
-                    Terminar asignación
-                  </v-btn>
-                </v-card-title>
-                <v-col>
-                  <v-data-table
-                    v-model="seleccionados"
-                    :headers="cabeceras"
-                    :items="alumnos"
-                    :search="busqueda"
-                    item-key="id"
-                    show-select
-                    class="elevation-1"
-                    :footer-props="{
-                      'items-per-page-text': 'alumnos por pág.'
-                    }"
-                  >
-                    <template v-slot:no-results>
-                      No se encontraron coincidencias
-                    </template>
-                    <template v-slot:no-data>No existen registros</template>
-                  </v-data-table>
-                </v-col>
-              </v-card>
-            </v-stepper-content>
-          </v-stepper-items>
-        </v-stepper>
-      </v-col>
+              </v-container>
+            </v-form>
+          </v-stepper-content>
+          <v-stepper-content step="2">
+            <v-card elevation="0">
+              <v-card-title>
+                <h2>Alumnos</h2>
+                <v-divider class="mx-4" vertical></v-divider>
+                <v-spacer></v-spacer>
+                <v-text-field
+                  v-model="busqueda"
+                  append-icon="mdi-magnify"
+                  label="Buscar"
+                  single-line
+                  hide-details
+                ></v-text-field>
+                <v-spacer></v-spacer>
+                <v-btn
+                  v-if="!profesor.registro_profesor"
+                  color="success"
+                  :loading="getEsperandoRespuesta"
+                  @click="asignarNuevosAlumnos"
+                >
+                  Modificar lista
+                </v-btn>
+                <v-btn
+                  v-else
+                  color="success"
+                  :loading="getEsperandoRespuesta"
+                  @click="asignarAlumnos"
+                >
+                  Terminar asignación
+                </v-btn>
+              </v-card-title>
+              <v-divider></v-divider>
+              <tabla />
+            </v-card>
+          </v-stepper-content>
+        </v-stepper-items>
+      </v-stepper>
     </v-card>
   </v-col>
 </template>

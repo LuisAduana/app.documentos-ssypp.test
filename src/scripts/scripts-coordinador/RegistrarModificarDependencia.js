@@ -1,5 +1,4 @@
-// eslint-disable-next-line prettier/prettier
-import { nombre_dependenciaRules, nombre_contactoRules, direccionRules, ciudadRules, correoRules, num_contactoRules, sectorRules, num_usRules } from "./../Rules";
+import Rules from "./../Rules";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
@@ -7,14 +6,14 @@ export default {
     return {
       validacion: true,
       formDependencia: this.dependencia,
-      nombre_dependenciaRules: nombre_dependenciaRules,
-      nombre_contactoRules: nombre_contactoRules,
-      direccionRules: direccionRules,
-      ciudadRules: ciudadRules,
-      correoRules: correoRules,
-      num_contactoRules: num_contactoRules,
-      sectorRules: sectorRules,
-      num_usRules: num_usRules
+      nombre_dependenciaRules: Rules.nombre_dependenciaRules,
+      nombre_contactoRules: Rules.nombre_contactoRules,
+      direccionRules: Rules.direccionRules,
+      ciudadRules: Rules.ciudadRules,
+      correoRules: Rules.correoRules,
+      num_contactoRules: Rules.num_contactoRules,
+      sectorRules: Rules.sectorRules,
+      num_usRules: Rules.num_usRules
     };
   },
 
@@ -32,8 +31,7 @@ export default {
 
     async registrar() {
       if (this.$refs.formularioDependencia.validate()) {
-        const response = await this.registrarDependencia(this.formDependencia);
-        if (response.status === 200) {
+        if (await this.registrarDependencia(this.formDependencia)) {
           this.$refs.formularioDependencia.reset();
         }
       }

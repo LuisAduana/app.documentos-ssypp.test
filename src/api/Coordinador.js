@@ -51,9 +51,9 @@ export default {
     await Csrf.getCookie();
     return Api.put("/coordinador/modificar-estado-proyecto", formulario);
   },
-  async obtenerProyectoPractica() {
+  async obtenerProyectosPracticas(formulario) {
     await Csrf.getCookie();
-    return Api.post("/coordinador/obtener-proyectos-practica");
+    return Api.post("/coordinador/obtener-proyectos-practica", formulario);
   },
   async registrarProyectoPractica(formulario) {
     await Csrf.getCookie();
@@ -111,9 +111,13 @@ export default {
     await Csrf.getCookie();
     return Api.put("coordinador/modificar-profesor", formulario);
   },
-  async obtenerAlumnosAsignados() {
+  async modificarAlumnosAsignados(formulario) {
     await Csrf.getCookie();
-    return Api.get("utilidades/obtener-alumnos-asignados");
+    return Api.put("coordinador/modificar-alumnos-asignados", formulario);
+  },
+  async obtenerAlumnosAsignadosActivos() {
+    await Csrf.getCookie();
+    return Api.get("utilidades/obtener-alumnos-asignados-activos");
   },
   async registrarProfesor(formulario) {
     await Csrf.getCookie();

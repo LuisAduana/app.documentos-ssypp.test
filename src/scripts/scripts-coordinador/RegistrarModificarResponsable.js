@@ -1,71 +1,36 @@
-import Coordinador from "../../api/Coordinador";
-import { mapActions } from "vuex";
+import Rules from "./../Rules";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   data: function() {
     return {
-      esperandoNombres: false,
-      esperandoRespuesta: false,
       validacion: true,
-      nombres_dependencias: [],
       formResponsable: this.responsable,
-      nombre_responsableRules: [
-        v => !!v || "Nombre de responsable requerido",
-        v =>
-          (v && v.length <= 120) ||
-          "El nombre de responsable es demasiado largo"
-      ],
-      nombre_dependenciaRules: [
-        v => !!v || "Nombre de dependencia requerido",
-        v =>
-          (v && v.length <= 230) ||
-          "El nombre de responsable es demasiado largo"
-      ],
-      correoRules: [
-        v => !!v || "Correo requerido",
-        v => /.+@.+\..+/.test(v) || "El correo no es válido",
-        v => (v && v.length <= 150) || "El correo es demasiado largo"
-      ],
-      num_contactoRules: [
-        v => !!v || "Número de contacto requerido",
-        v => (v && v.length >= 10) || "El número es demasiado corto",
-        v => (v && v.length <= 20) || "El número es demasiado largo"
-      ],
-      cargoRules: [
-        v => !!v || "Cargo requerido",
-        v => (v && v.length <= 100) || "Es demasiado largo"
-      ]
+      nombre_responsableRules: Rules.nombre_responsableRules,
+      nombre_dependenciaRules: Rules.nombre_dependenciaRules,
+      correoRules: Rules.correoRules,
+      num_contactoRules: Rules.num_contactoRules,
+      cargoRules: Rules.cargoRules
     };
   },
   methods: {
-    ...mapActions(["snackBarError", "snackBarExito", "snackBarInfo"]),
+    ...mapActions("moduloResponsable", [
+      "registrarResponsable",
+      "modificarResponsable"
+    ]),
+    ...mapActions("moduloDependencia", ["obtenerNombresDependencias"]),
 
-    modificarResponsable() {
+    async modificar() {
       if (this.$refs.formularioResponsable.validate()) {
-        this.esperandoRespuesta = true;
-        Coordinador.modificarResponsable(this.formResponsable)
-          .then(() => {
-            this.esperandoRespuesta = false;
-            this.snackBarExito("¡Responsable modificado exitosamente!");
-          })
-          .catch(error => {
-            this.mensajeErrores(error);
-          });
+        await this.modificarResponsable();
       }
     },
 
-    registrarResponsable() {
+    async registrar() {
       if (this.$refs.formularioResponsable.validate()) {
-        this.esperandoRespuesta = true;
-        Coordinador.registrarResponsable(this.formResponsable)
-          .then(() => {
-            this.esperandoRespuesta = false;
-            this.snackBarExito("¡Responsable registrado exitosamente!");
-            this.$refs.formularioResponsable.reset();
-          })
-          .catch(error => {
-            this.mensajeErrores(error);
-          });
+        if (await this.registrarResponsable(this.formResponsable)) {
+          this.$refs.formularioResponsable.reset();
+        }
       }
     },
 
@@ -98,22 +63,14 @@ export default {
       }
     }
   },
-  mounted() {
-    this.esperandoNombres = true;
-    Coordinador.obtenerNombresDependencias()
-      .then(response => {
-        if (response.data.length == 0) {
-          this.snackBarInfo("No existen dependencias, registre o active una.");
-        }
-        this.nombres_dependencias = response.data;
-      })
-      .catch(() => {
-        this.snackBarError(
-          "No se pudieron consultar las dependencias, sin las dependencias no podrá registrar o modificar un responsable. Recargue la página."
-        );
-      })
-      .finally(() => {
-        this.esperandoRespuesta = false;
-      });
+  async mounted() {
+    await this.obtenerNombresDependencias();
+  },
+  computed: {
+    ...mapGetters(["getEsperandoRespuesta"]),
+    ...mapGetters("moduloDependencia", [
+      "getEsperandoNombresDependencias",
+      "getNombresDependencias"
+    ])
   }
 };

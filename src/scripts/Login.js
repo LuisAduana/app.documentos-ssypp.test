@@ -1,4 +1,4 @@
-import { correoRules, passwordRules } from "./Rules";
+import Rules from "./Rules";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
@@ -8,11 +8,11 @@ export default {
       correo: "",
       password: ""
     },
-    correoRules: correoRules,
-    passwordRules: passwordRules
+    correoRules: Rules.correoRules,
+    passwordRules: Rules.passwordRules
   }),
   methods: {
-    ...mapActions("moduloUsuario", ["loginUsuario"]),
+    ...mapActions("moduloUsuario", ["loginUsuario", "authUsuario"]),
     ...mapActions(["saveInformacionDashboard", "saveUsuario"]),
 
     async login() {
@@ -26,9 +26,11 @@ export default {
       this.$router.push({ name: "Registro" });
     }
   },
-  mounted() {
-    this.saveUsuario({});
-    this.saveInformacionDashboard({});
+  async mounted() {
+    const response = await this.authUsuario();
+    if (response === 200) {
+      this.$router.push({ name: "Dashboard" });
+    }
   },
   computed: {
     ...mapGetters(["getEsperandoRespuesta"])

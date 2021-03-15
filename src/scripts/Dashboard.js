@@ -5,6 +5,7 @@ export default {
     drawer: false,
     itemSeleccionado: 0,
     informacionProyecto: {},
+    menu: [],
     menuAdministrador: [
       {
         text: "Coordinadores",
@@ -54,6 +55,13 @@ export default {
         ruta: "/consulta-inscripcion"
       }
     ],
+    menuProfesor: [
+      {
+        text: "Alumnos",
+        icon: "mdi-school",
+        ruta: "/consulta-alumnos"
+      }
+    ],
     menuAlumno: [
       {
         text: "Documentos",
@@ -88,13 +96,20 @@ export default {
   },
   async mounted() {
     const response = await this.authUsuario();
-    if (response.status === 200) {
+    if (response === 200) {
       if (this.getUsuario.rol_usuario === "ALUMNO") {
+        this.menu = this.menuAlumno;
         await this.obtenerInformacionAlumno({
           id: this.getUsuario.id
         });
+      } else if (this.getUsuario.rol_usuario === "PROFESOR") {
+        this.menu = this.menuProfesor;
+      } else if (this.getUsuario.rol_usuario === "COORDINADOR") {
+        this.menu = this.menuCoordinador;
+      } else if (this.getUsuario.rol_usuario === "ADMINISTRADOR") {
+        this.menu = this.menuAdministrador;
       }
-    } else if (response.status === 401) {
+    } else if (response === 401) {
       this.$router.push({ name: "Login" });
     } else {
       this.$router.push({ name: "NotFound" });
