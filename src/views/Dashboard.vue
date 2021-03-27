@@ -49,10 +49,33 @@
         {{ getUsuario.apellido_materno }}
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn href="#" @click.prevent="logout()" target="_blank" text>
-        <span class="mr-2">Cerrar sesión</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+      <v-menu right bottom transition="slide-y-transition">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on">
+            <v-icon>mdi-dots-vertical</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item-group>
+            <v-list-item @click="modificarDatosPersonales">
+              <v-list-item-content>
+                <v-list-item-title> Datos personales </v-list-item-title>
+              </v-list-item-content>
+              <v-list-item-icon>
+                <v-icon>mdi-account-edit</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+            <v-list-item @click.prevent="logout">
+              <v-list-item-content>
+                <v-list-item-title> Cerrar sesión </v-list-item-title>
+              </v-list-item-content>
+              <v-list-item-icon>
+                <v-icon>mdi-open-in-new</v-icon>
+              </v-list-item-icon>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-menu>
     </v-app-bar>
 
     <v-main>
@@ -67,30 +90,15 @@
       >
         <v-col no-gutters>
           <font size="1">
-            <strong> Coordinador: </strong>
+            <strong> Dependencia: </strong>
             {{
-              getInformacionDashboard.informacionDashboard.nombres_coordinador
-            }}
-            {{
-              getInformacionDashboard.informacionDashboard
-                .apellido_paterno_coordinador
-            }}
-            {{
-              getInformacionDashboard.informacionDashboard
-                .apellido_materno_coordinador
-            }}
-          </font>
-          <br />
-          <font size="1">
-            <strong> Correo: </strong>
-            {{
-              getInformacionDashboard.informacionDashboard.correo_coordinador
+              getInformacionDashboard.proyecto.dependencia.nombre_dependencia
             }}
           </font>
           <br />
           <font size="1">
             <strong> Número: </strong>
-            {{ getInformacionDashboard.informacionDashboard.num_coordinador }}
+            {{ getInformacionDashboard.proyecto.dependencia.num_contacto }}
           </font>
         </v-col>
         <v-col align="center">
@@ -104,20 +112,13 @@
           <font size="1">
             <strong>Responsable: </strong>
             {{
-              getInformacionDashboard.informacionDashboard.nombre_responsable
-            }}
-          </font>
-          <br />
-          <font size="1">
-            <strong>Correo: </strong>
-            {{
-              getInformacionDashboard.informacionDashboard.correo_responsable
+              getInformacionDashboard.proyecto.responsable.nombre_responsable
             }}
           </font>
           <br />
           <font size="1">
             <strong>Número: </strong>
-            {{ getInformacionDashboard.informacionDashboard.num_responsable }}
+            {{ getInformacionDashboard.proyecto.responsable.num_contacto }}
           </font>
         </v-col>
       </v-row>

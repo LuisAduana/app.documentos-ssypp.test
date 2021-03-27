@@ -1,4 +1,5 @@
 import Api from "./../api/Coordinador";
+import ApiProfesor from "./../api/Profesor";
 import Utils from "./StoreUtils";
 
 export default {
@@ -154,6 +155,29 @@ export default {
         });
       this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });
       return response;
+    },
+
+    async obtenerAlumnos(context, formulario) {
+      this.commit("SET_CABECERAS", Utils.cabecerasAlumnoProfesor, {
+        root: true
+      });
+      this.commit("SET_ESPERANDO_TABLA", true, { root: true });
+      await ApiProfesor.consultaAlumnos(formulario)
+        .then(response => {
+          this.commit(
+            "SET_ITEMS",
+            {
+              itemsActivos: response.data,
+              itemsInactivos: [],
+              tipoTabla: "consulta-alumnos"
+            },
+            { root: true }
+          );
+        })
+        .catch(() => {
+          this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT_TABLE);
+        });
+      this.commit("SET_ESPERANDO_TABLA", false, { root: true });
     }
   }
 };

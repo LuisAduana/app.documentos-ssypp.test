@@ -122,6 +122,25 @@
           </v-btn>
         </template>
       </template>
+      <template v-else-if="getTipoTabla == 'consulta-alumnos'">
+        <v-badge
+          color="red"
+          dot
+          icon
+          overlap
+          bordered
+          :value="item.notificacion"
+        >
+          <v-btn
+            @click.prevent="consultaDocumentosAlumno(item)"
+            fab
+            x-small
+            elevation="0"
+          >
+            <v-icon small> mdi-file-document-multiple-outline </v-icon>
+          </v-btn>
+        </v-badge>
+      </template>
     </template>
   </v-data-table>
 </template>
@@ -147,6 +166,7 @@ export default {
     proyectos: []
   }),
   methods: {
+    ...mapActions(["snackBarInfo"]),
     ...mapActions("moduloAlumno", ["obtenerProyectosSeleccionados"]),
     ...mapActions("moduloProyectos", [
       "obtenerProyectosActivosPractica",
@@ -164,9 +184,23 @@ export default {
       "saveItemsEnTabla",
       "saveSoloInactivos"
     ]),
+    ...mapActions("moduloDocumento", ["obtenerDocumentosAlumno"]),
 
     agregarProyecto(item) {
       this.saveOpcion(item);
+    },
+    async consultaDocumentosAlumno(item) {
+      const response = await this.obtenerDocumentosAlumno({
+        alumno_id: item.alumno_id
+      });
+      if (response.length === 0) {
+        this.snackBarInfo("El alumno no tiene documentos registrados.");
+      } else if (response.length > 0) {
+        this.$router.push({
+          name: "ConsultaDocumentosAlumno",
+          params: { documentos: response }
+        });
+      }
     },
     async consultarProyectos(item) {
       const response = await this.obtenerProyectosSeleccionados({

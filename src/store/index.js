@@ -1,5 +1,6 @@
 import ModuloAlumno from "./ModuloAlumno";
 import ModuloDependencia from "./ModuloDependencia";
+import ModuloDocumento from "./ModuloDocumento";
 import ModuloInscripcion from "./ModuloInscripcion";
 import ModuloProfesor from "./ModuloProfesor";
 import ModuloProyectos from "./ModuloProyectos";
@@ -16,9 +17,11 @@ export default new Vuex.Store({
     esperandoRespuestaDos: false,
     esperandoTabla: false,
     soloInactivos: false,
+    dialogoDocumento: false,
     dialogoAsignarProyecto: false,
     usuario: null,
     informacionDashboard: null,
+    profesor: {},
     busquedaEnTabla: "",
     tipoTabla: "",
     tipoSeleccion: false,
@@ -43,6 +46,9 @@ export default new Vuex.Store({
     },
     SET_INFORMACION_DASHBOARD(state, informacionDashboard) {
       state.informacionDashboard = informacionDashboard;
+    },
+    SET_PROFESOR(state, profesor) {
+      state.profesor = profesor;
     },
     SET_SNACKBAR(state, snackbar) {
       state.snackbars = state.snackbars.concat(snackbar);
@@ -92,6 +98,9 @@ export default new Vuex.Store({
     SET_DIALOGO_ASIGNAR_PROYECTO(state, dialogoAsignarProyecto) {
       state.dialogoAsignarProyecto = dialogoAsignarProyecto;
     },
+    SET_DIALOGO_DOCUMENTO(state, dialogoDocumento) {
+      state.dialogoDocumento = dialogoDocumento;
+    },
     ELIMINAR_ITEM_EN_TABLA(state, posicion) {
       state.itemsEnTabla.splice(posicion, 1);
     }
@@ -107,15 +116,19 @@ export default new Vuex.Store({
       commit("SET_ROL_USUARIO", rolUsuario);
     },
     saveInformacionDashboard({ commit }, informacionDashboard) {
-      commit("SET_INFORMACION_DASHBOARD", {
-        informacionDashboard: informacionDashboard
-      });
+      commit("SET_INFORMACION_DASHBOARD", informacionDashboard);
+    },
+    saveInformacionProfesor({ commit }, profesor) {
+      commit("SET_PROFESOR", profesor);
     },
     saveTipoSeleccion({ commit }, tipoSeleccion) {
       commit("SET_TIPO_SELECCION", tipoSeleccion);
     },
     saveDialogoAsignarProyecto({ commit }, dialogoAsignarProyecto) {
       commit("SET_DIALOGO_ASIGNAR_PROYECTO", dialogoAsignarProyecto);
+    },
+    saveDialogoDocumento({ commit }, dialogoDocumento) {
+      commit("SET_DIALOGO_DOCUMENTO", dialogoDocumento);
     },
     saveBusquedaEnTabla({ commit }, busquedaEnTabla) {
       commit("SET_BUSQUEDA_EN_TABLA", busquedaEnTabla);
@@ -169,6 +182,9 @@ export default new Vuex.Store({
     getInformacionDashboard(state) {
       return state.informacionDashboard;
     },
+    getProfesor(state) {
+      return state.profesor;
+    },
     getEsperandoRespuesta(state) {
       return state.esperandoRespuesta;
     },
@@ -202,6 +218,9 @@ export default new Vuex.Store({
     getDialogoAsignarProyecto(state) {
       return state.dialogoAsignarProyecto;
     },
+    getDialogoDocumento(state) {
+      return state.dialogoDocumento;
+    },
     getTipoSeleccion(state) {
       return state.tipoSeleccion;
     }
@@ -209,6 +228,7 @@ export default new Vuex.Store({
   modules: {
     moduloAlumno: ModuloAlumno,
     moduloDependencia: ModuloDependencia,
+    moduloDocumento: ModuloDocumento,
     moduloInscripcion: ModuloInscripcion,
     moduloProfesor: ModuloProfesor,
     moduloProyectos: ModuloProyectos,

@@ -56,6 +56,10 @@ export default {
   metodologiaRulesOpcional: [
     v => v.length <= 50 || "La metodología es demasiado larga"
   ],
+  noReporteRules: [
+    v => !!v || "Número requerido",
+    v => /^([0-9]{2})$/.test(v) || "Número incorrecto"
+  ],
   nombre_contactoRules: [
     v => !!v || "Nombre de contacto requerido",
     v => (v && v.length <= 200) || "El nombre de contacto demasiado largo"
@@ -125,8 +129,10 @@ export default {
     v => !!v || "El sector es requerido",
     v => (v && v.length <= 50) || "El sector es demasiado largo"
   ],
+  tipoRules: [v => !!v || "Tipo de archivo requerido"],
   tokenRules: [
     v => !!v || "Token requerido",
     v => (v && v.length <= 5) || "El número es demasiado largo"
-  ]
+  ],
+  DocumentoRules: [v => !!v || "Seleccione un documento"]
 };

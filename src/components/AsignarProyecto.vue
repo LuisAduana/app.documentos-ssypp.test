@@ -231,7 +231,7 @@ export default {
             id: this.alumno.id,
             alumno_id: this.alumno.alumno_id,
             tipo_proyecto: this.tipoInscripcion,
-            proyecto_id: this.seleccionados[0].id
+            proyecto_id: this.seleccionados[0].proyecto_id
           })
         ) {
           for (var i = 0; i < this.getItemsEnTabla.length; i++) {

@@ -65,18 +65,13 @@ export default {
     menuAlumno: [
       {
         text: "Documentos",
-        icon: "mdi-block-helper",
-        ruta: ""
+        icon: "mdi-file-document-multiple-outline",
+        ruta: "/consultar-documentos"
       },
       {
-        text: "Cargar documento",
-        icon: "mdi-block-helper",
-        ruta: ""
-      },
-      {
-        text: "Generar documentos",
-        icon: "mdi-block-helper",
-        ruta: ""
+        text: "Proyecto",
+        icon: "mdi-office-building-outline",
+        ruta: "/informacion-proyecto"
       }
     ]
   }),
@@ -84,7 +79,8 @@ export default {
     ...mapActions("moduloUsuario", [
       "authUsuario",
       "logoutUsuario",
-      "obtenerInformacionAlumno"
+      "obtenerInformacionAlumno",
+      "obtenerInformacionProfesor"
     ]),
 
     async logout() {
@@ -92,6 +88,10 @@ export default {
       if (response.status === 200) {
         this.$router.push({ name: "Login" });
       }
+    },
+
+    modificarDatosPersonales() {
+      this.$router.push({ name: "DatosPersonales" });
     }
   },
   async mounted() {

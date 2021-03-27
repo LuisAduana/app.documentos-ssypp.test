@@ -344,6 +344,70 @@ const routes = [
             });
           }
         }
+      },
+      {
+        path: "/consulta-documentos-alumno",
+        name: "ConsultaDocumentosAlumno",
+        props: true,
+        component: () =>
+          import(
+            /* webpackChunkName: "consulta-documentos-alumno" */ "../views/views-profesor/ConsultaDocumentosAlumno.vue"
+          ),
+        beforeEnter: (to, from, next) => {
+          if (rol() === "PROFESOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
+        path: "/consultar-documentos",
+        name: "ConsultarDocumento",
+        component: () =>
+          import(
+            /* webpackChunkName: "consultar-documentos" */ "../views/views-alumno/ConsultaDocumentos.vue"
+          ),
+        beforeEnter: (to, from, next) => {
+          if (rol() === "ALUMNO") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
+        path: "/informacion-proyecto",
+        name: "InformacionProyecto",
+        component: () =>
+          import(
+            /* webpackChunkName: "informacion-proyecto" */ "../views/views-alumno/ProyectoInformacion.vue"
+          ),
+        beforeEnter: (to, from, next) => {
+          if (rol() === "ALUMNO") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
+        path: "/datos-personales",
+        name: "DatosPersonales",
+        props: true,
+        component: () =>
+          import(
+            /* webpackChunkName: "datos-personales" */ "../components/DatosPersonales.vue"
+          )
       }
     ]
   },

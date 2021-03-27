@@ -107,6 +107,20 @@ export default {
     { text: "No. contácto", value: "num_contacto" },
     { text: "Edición", value: "edicion", sortable: false }
   ],
+  cabecerasAlumnoProfesor: [
+    { text: "Matrícula", value: "matricula" },
+    { text: "Correo", value: "correo" },
+    { text: "Nombres", value: "nombres" },
+    { text: "Apellido pat.", value: "apellido_paterno" },
+    { text: "Apellido mat.", value: "apellido_materno" },
+    { text: "No. de contácto", value: "num_contacto" },
+    { text: "Documentos", value: "edicion", sortable: false }
+  ],
+  cabecerasDocumentosAlumno: [
+    { text: "Nombre", value: "nombre" },
+    { text: "Estado", value: "estado" },
+    { text: "Edición", value: "edicion", sortable: false }
+  ],
   separarItems(items) {
     var itemsActivos = [];
     var itemsInactivos = [];
