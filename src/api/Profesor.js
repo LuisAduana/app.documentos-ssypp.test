@@ -10,8 +10,24 @@ export default {
     await Csrf.getCookie();
     return Api.post("/profesor/obtener-documentos-alumno", formulario);
   },
-  async descargarDocumento(formulario) {
+  async obtenerMensajes(formulario) {
     await Csrf.getCookie();
-    return Api.post("/profesor/descargar-documento", formulario);
+    return Api.post("/profesor/obtener-mensajes", formulario);
+  },
+  async descargarDocumentoPractica(formulario) {
+    await Csrf.getCookie();
+    return Api.post("/profesor/descargar-documento-practica", formulario, {
+      responseType: "blob"
+    });
+  },
+  async descargarDocumentoServicio(formulario) {
+    await Csrf.getCookie();
+    return Api.post("/profesor/descargar-documento-servicio", formulario, {
+      responseType: "blob"
+    });
+  },
+  async modificarEstadoDocumento(formulario) {
+    await Csrf.getCookie();
+    return Api.put("/profesor/modificar-estado-documento", formulario);
   }
 };

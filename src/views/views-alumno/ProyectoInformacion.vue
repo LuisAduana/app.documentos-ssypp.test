@@ -2,7 +2,7 @@
   <v-container v-if="getInformacionDashboard">
     <v-row>
       <v-col align="center">
-        <h2>Proyecto</h2>
+        <h2>Información</h2>
       </v-col>
     </v-row>
     <v-row>
@@ -168,7 +168,40 @@
           </v-col>
         </v-row>
         <v-row v-else>
-          <h1>SERVICIO</h1>
+          <v-col>
+            <v-text-field
+              :value="
+                getInformacionDashboard.proyecto.proyecto_servicio.actividades
+              "
+              label="Actividades"
+              dense
+              readonly
+            ></v-text-field>
+            <v-text-field
+              :value="
+                getInformacionDashboard.proyecto.proyecto_servicio.requisitos
+              "
+              label="Requisitos"
+              dense
+              readonly
+            ></v-text-field>
+            <v-text-field
+              :value="
+                getInformacionDashboard.proyecto.proyecto_servicio.horario
+              "
+              label="Horario"
+              dense
+              readonly
+            ></v-text-field>
+            <v-text-field
+              :value="
+                getInformacionDashboard.proyecto.proyecto_servicio.num_alumnos
+              "
+              label="No. alumnos"
+              dense
+              readonly
+            ></v-text-field>
+          </v-col>
         </v-row>
       </v-col>
     </v-row>

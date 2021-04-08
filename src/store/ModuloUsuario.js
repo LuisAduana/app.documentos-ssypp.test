@@ -106,7 +106,7 @@ export default {
       const response = await Api.login(credenciales)
         .then(response => {
           if (response.data.estado === "ACTIVO") {
-            return true;
+            return { respuesta: true, rol_usuario: response.data.rol_usuario };
           } else if (response.data.estado === "INSCRIPCION") {
             this.dispatch(
               "snackBarInfo",
@@ -125,18 +125,21 @@ export default {
           } else {
             this.dispatch("snackBarError", "Tu usuario ha sido desactivado.");
           }
-          return false;
+          return { respuesta: false };
         })
         .catch(error => {
           if (error.response.status === 422) {
-            this.dispatch("snackBarError", "Las credenciales son inválidas");
+            this.dispatch(
+              "snackBarError",
+              error.response.data.errors.correo[0]
+            );
           } else {
             this.dispatch(
               "snackBarError",
               "Hubo un error, inténtelo nuevamente"
             );
           }
-          return false;
+          return { respuesta: false };
         });
       this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });
       return response;

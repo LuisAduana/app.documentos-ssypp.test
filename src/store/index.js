@@ -18,6 +18,7 @@ export default new Vuex.Store({
     esperandoTabla: false,
     soloInactivos: false,
     dialogoDocumento: false,
+    dialogoModificarDocumento: false,
     dialogoAsignarProyecto: false,
     usuario: null,
     informacionDashboard: null,
@@ -101,8 +102,21 @@ export default new Vuex.Store({
     SET_DIALOGO_DOCUMENTO(state, dialogoDocumento) {
       state.dialogoDocumento = dialogoDocumento;
     },
+    SET_DIALOGO_MODIFICAR_DOCUMENTO(state, dialogoModificarDocumento) {
+      state.dialogoModificarDocumento = dialogoModificarDocumento;
+    },
+    SET_MODIFICAR_ITEM_TABLA(state, { id, estado }) {
+      state.itemsEnTabla.forEach(element => {
+        if (element.id === id) {
+          element.estado = estado;
+        }
+      });
+    },
     ELIMINAR_ITEM_EN_TABLA(state, posicion) {
       state.itemsEnTabla.splice(posicion, 1);
+    },
+    AGREGAR_ITEM_EN_TABLA(state, item) {
+      state.itemsEnTabla.push(item);
     }
   },
   actions: {
@@ -130,6 +144,9 @@ export default new Vuex.Store({
     saveDialogoDocumento({ commit }, dialogoDocumento) {
       commit("SET_DIALOGO_DOCUMENTO", dialogoDocumento);
     },
+    saveDialogoModificarDocumento({ commit }, dialogoModificarDocumento) {
+      commit("SET_DIALOGO_MODIFICAR_DOCUMENTO", dialogoModificarDocumento);
+    },
     saveBusquedaEnTabla({ commit }, busquedaEnTabla) {
       commit("SET_BUSQUEDA_EN_TABLA", busquedaEnTabla);
     },
@@ -152,6 +169,12 @@ export default new Vuex.Store({
     },
     saveItemsSeleccionados({ commit }, itemsSeleccionados) {
       commit("SET_ITEMS_SELECCIONADOS", itemsSeleccionados);
+    },
+    saveModificarItemTabla({ commit }, { id, estado }) {
+      commit("SET_MODIFICAR_ITEM_TABLA", { id, estado });
+    },
+    saveNuevoItemEnTabla({ commit }, item) {
+      commit("AGREGAR_ITEM_EN_TABLA", item);
     },
     snackBarError({ commit }, message) {
       commit("SET_SNACKBAR", {
@@ -220,6 +243,9 @@ export default new Vuex.Store({
     },
     getDialogoDocumento(state) {
       return state.dialogoDocumento;
+    },
+    getDialogoModificarDocumento(state) {
+      return state.dialogoModificarDocumento;
     },
     getTipoSeleccion(state) {
       return state.tipoSeleccion;

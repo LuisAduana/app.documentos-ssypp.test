@@ -3,20 +3,69 @@
     <v-col align="center">
       <v-card max-width="800">
         <v-container>
-          <v-row no-gutters>
-            <v-col align="left">
-              <v-btn icon @click="regresar()">
+          <v-row>
+            <v-col align="left" cols="12" xl="1" lg="1" md="1" sm="1" xs="12">
+              <v-btn icon @click="regresar">
                 <v-icon>mdi-keyboard-backspace</v-icon>
               </v-btn>
             </v-col>
-          </v-row>
-          <v-row>
-            <v-col align="center">
-              <h1>Modificar Coordinador</h1>
+            <v-col align="center" cols="12" sm="11" xs="12">
+              <h1>
+                Modificar Coordinador
+              </h1>
             </v-col>
           </v-row>
           <v-row>
             <v-col align="center">
+              <v-form
+                ref="formularioPassword"
+                v-model="validacionPassword"
+                lazy-validation
+              >
+                <v-container>
+                  <v-row no-gutters>
+                    <v-col align="left">
+                      <h4>Contraseña:</h4>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12" xs="12" sm="5" md="5">
+                      <v-text-field
+                        v-model="formPassword.password"
+                        :rules="passwordRules"
+                        type="password"
+                        label="Contraseña *"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" xs="12" sm="5" md="5">
+                      <v-text-field
+                        v-model="resetPasswordConfirmacion"
+                        :rules="[
+                          v => !!v || 'Confirme la contraseña',
+                          this.formPassword.password ===
+                            this.resetPasswordConfirmacion ||
+                            'Las contraseñas no coinciden'
+                        ]"
+                        type="password"
+                        label="Confirmar contraseña *"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" xs="12" sm="2" md="2">
+                      <v-btn
+                        :disabled="!validacionPassword"
+                        color="success"
+                        :loading="getEsperandoRespuestaDos"
+                        @click="modificarPassword"
+                      >
+                        Cambiar
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-form>
+              <v-divider></v-divider>
               <v-form
                 ref="formularioCoordinador"
                 v-model="validacion"

@@ -17,7 +17,6 @@
           <v-dialog v-model="getDialogoDocumento" persistent width="600">
             <template v-slot:activator="{ on, attrs }">
               <v-btn
-                v-if="getInformacionDashboard.tipo_proyecto === 'practicas'"
                 color="success"
                 v-bind="attrs"
                 v-on="on"
@@ -26,12 +25,16 @@
                 Nuevo
               </v-btn>
             </template>
-            <seleccionar :tipo="'practica'" />
+            <Seleccionar
+              v-if="getInformacionDashboard.tipo_proyecto === 'practicas'"
+              :tipo="'practica'"
+            />
+            <Seleccionar v-else :tipo="'servicio'" />
           </v-dialog>
         </template>
       </v-card-title>
       <v-divider></v-divider>
-      <tabla />
+      <Tabla />
     </v-card>
   </v-col>
 </template>

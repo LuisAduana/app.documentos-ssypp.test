@@ -15,7 +15,7 @@
         <v-spacer></v-spacer>
       </v-card-title>
       <v-divider></v-divider>
-      <tabla />
+      <Tabla />
     </v-card>
   </v-col>
 </template>

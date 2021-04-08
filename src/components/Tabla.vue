@@ -39,6 +39,21 @@
       <v-dialog v-model="getDialogoProyectoPractica" persistent>
         <informacionProyectoPractica />
       </v-dialog>
+      <v-dialog v-model="dialogoMensajes" max-width="500">
+        <Mensajes :retroalimentacion="retroalimentacion" />
+      </v-dialog>
+      <v-dialog
+        v-model="getDialogoModificarDocumento"
+        max-width="600"
+        persistent
+      >
+        <ModificarDocumento
+          v-if="getInformacionDashboard === 'practicas'"
+          :tipo="'practica'"
+          :item="documento"
+        />
+        <ModificarDocumento v-else :tipo="'servicio'" :item="documento" />
+      </v-dialog>
       <v-dialog
         v-model="getDialogoAsignarProyecto"
         fullscreen
@@ -57,22 +72,36 @@
     <template v-slot:[`item.edicion`]="{ item }">
       <template v-if="getTipoTabla === 'inscripcion'">
         <template v-if="!getSoloInactivos">
-          <v-btn
-            @click.prevent="cancelarConfirmacion(item)"
-            fab
-            x-small
-            elevation="0"
-          >
-            <v-icon small> mdi-cancel </v-icon>
-          </v-btn>
-          <v-btn
-            @click.prevent="desactivarConfirmacion(item)"
-            fab
-            x-small
-            elevation="0"
-          >
-            <v-icon small> mdi-delete </v-icon>
-          </v-btn>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                @click.prevent="cancelarConfirmacion(item)"
+                fab
+                x-small
+                elevation="0"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon small> mdi-cancel </v-icon>
+              </v-btn>
+            </template>
+            <span>Cancelar</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                @click.prevent="desactivarConfirmacion(item)"
+                fab
+                x-small
+                elevation="0"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon small> mdi-delete </v-icon>
+              </v-btn>
+            </template>
+            <span>Terminar</span>
+          </v-tooltip>
         </template>
       </template>
       <template
@@ -136,10 +165,75 @@
             fab
             x-small
             elevation="0"
+            :loading="item.esperando"
           >
             <v-icon small> mdi-file-document-multiple-outline </v-icon>
           </v-btn>
         </v-badge>
+      </template>
+      <template v-else-if="getTipoTabla == 'documentos-alumno'">
+        <template v-if="item.estado == 'RECHAZADO'">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                @click.prevent="modificarPractica(item)"
+                fab
+                x-small
+                elevation="0"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon> mdi-upload-outline </v-icon>
+              </v-btn>
+            </template>
+            <span>Modificar</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                @click.prevent="mensajes(item)"
+                fab
+                x-small
+                elevation="0"
+                :loading="item.esperandoMensaje"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon> mdi-message-text-outline </v-icon>
+              </v-btn>
+            </template>
+            <span>Mensajes</span>
+          </v-tooltip>
+        </template>
+        <v-tooltip bottom v-if="getInformacionDashboard">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-if="getInformacionDashboard.tipo_proyecto === 'practicas'"
+              @click.prevent="descargarPractica(item)"
+              fab
+              x-small
+              elevation="0"
+              :loading="item.esperandoDescarga"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon small> mdi-download </v-icon>
+            </v-btn>
+            <v-btn
+              v-else
+              @click.prevent="descargarServicio(item)"
+              fab
+              x-small
+              elevation="0"
+              :loading="item.esperandoDescarga"
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-icon small> mdi-download </v-icon>
+            </v-btn>
+          </template>
+          <span>Descargar</span>
+        </v-tooltip>
       </template>
     </template>
   </v-data-table>
@@ -149,6 +243,8 @@
 import asignarProyectos from "./../components/AsignarProyecto";
 import informacionProyectoServicio from "./../components/InformacionProyectoServicio";
 import informacionProyectoPractica from "./../components/InformacionProyectoPractica";
+import Mensajes from "./../components/Mensajes";
+import ModificarDocumento from "./../components/ModificarDocumento";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
@@ -156,17 +252,19 @@ export default {
   data: () => ({
     dialogoConfirmacion: false,
     dialogoAsignarProyecto: false,
+    dialogoMensajes: false,
     isCancelar: false,
     MENSAJE_DESACTIVAR: "¿Está seguro que desea desactivar este elemento?",
     MENSAJE_CANCELAR: "¿Está seguro que desea cancelar la inscripción?",
     mensaje: "",
     tipoInscripcion: "",
     alumno: {},
+    documento: {},
+    retroalimentacion: [],
     proyectosSeleccionados: [],
     proyectos: []
   }),
   methods: {
-    ...mapActions(["snackBarInfo"]),
     ...mapActions("moduloAlumno", ["obtenerProyectosSeleccionados"]),
     ...mapActions("moduloProyectos", [
       "obtenerProyectosActivosPractica",
@@ -179,27 +277,39 @@ export default {
       "saveOpcion"
     ]),
     ...mapActions([
+      "snackBarInfo",
       "saveCambioTabla",
       "saveDialogoAsignarProyecto",
+      "saveDialogoModificarDocumento",
       "saveItemsEnTabla",
       "saveSoloInactivos"
     ]),
-    ...mapActions("moduloDocumento", ["obtenerDocumentosAlumno"]),
+    ...mapActions("moduloDocumento", [
+      "descargarDocumentoPractica",
+      "descargarDocumentoServicio",
+      "obtenerDocumentosAlumno",
+      "obtenerMensajes"
+    ]),
 
     agregarProyecto(item) {
       this.saveOpcion(item);
     },
     async consultaDocumentosAlumno(item) {
+      item.esperando = true;
       const response = await this.obtenerDocumentosAlumno({
         alumno_id: item.alumno_id
       });
-      if (response.length === 0) {
+      if (response.documentos.length === 0) {
         this.snackBarInfo("El alumno no tiene documentos registrados.");
-      } else if (response.length > 0) {
+      } else if (response.documentos.length > 0) {
+        for (var i = 0; i < response.documentos.length; i++) {
+          response.documentos[i].esperando = false;
+        }
         this.$router.push({
           name: "ConsultaDocumentosAlumno",
-          params: { documentos: response }
+          params: { documentos: response.documentos, tipo: response.tipo }
         });
+        item.esperando = false;
       }
     },
     async consultarProyectos(item) {
@@ -220,6 +330,10 @@ export default {
     },
     editarItem(item) {
       this.editar(item);
+    },
+    modificarPractica(item) {
+      this.documento = item;
+      this.saveDialogoModificarDocumento(true);
     },
     masInformacion(item) {
       this.saveProyecto(item);
@@ -250,6 +364,16 @@ export default {
         }
       }
     },
+    async descargarPractica(item) {
+      item.esperandoDescarga = true;
+      await this.descargarDocumentoPractica(item);
+      item.esperandoDescarga = false;
+    },
+    async descargarServicio(item) {
+      item.esperandoDescarga = true;
+      await this.descargarDocumentoServicio(item);
+      item.esperandoDescarga = false;
+    },
     moverItemsEnTabla(item, cambio) {
       for (var i = 0; i < this.getItemsEnTabla.length; i++) {
         if (this.getItemsEnTabla[i].id === item.id) {
@@ -275,6 +399,15 @@ export default {
       this.$nextTick(() => {
         this.item = {};
       });
+    },
+    async mensajes(item) {
+      item.esperandoMensaje = true;
+      const response = await this.obtenerMensajes(item);
+      if (response.estado) {
+        this.retroalimentacion = response.mensajes;
+        this.dialogoMensajes = true;
+      }
+      item.esperandoMensaje = false;
     }
   },
   mounted() {
@@ -290,8 +423,10 @@ export default {
       "getBusquedaEnTabla",
       "getCabeceras",
       "getDialogoAsignarProyecto",
+      "getDialogoModificarDocumento",
       "getEsperandoRespuesta",
       "getEsperandoTabla",
+      "getInformacionDashboard",
       "getItemsEnTabla",
       "getSoloInactivos",
       "getTipoTabla"
@@ -314,7 +449,9 @@ export default {
   components: {
     asignarProyectos,
     informacionProyectoServicio,
-    informacionProyectoPractica
+    informacionProyectoPractica,
+    Mensajes,
+    ModificarDocumento
   }
 };
 </script>

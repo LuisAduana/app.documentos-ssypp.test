@@ -69,7 +69,7 @@ export default {
             if (error.response.status === 422) {
               if (Object.keys(error.response.data.errors).length === 2) {
                 this.snackBarError(error.response.data.errors.correo[0]);
-              } else {
+              } else if (error.response.data.errors.registro == null) {
                 if (error.response.data.errors.correo == null) {
                   this.snackBarError(
                     error.response.data.errors.num_personal[0]
@@ -77,6 +77,8 @@ export default {
                 } else {
                   this.snackBarError(error.response.data.errors.correo[0]);
                 }
+              } else {
+                this.snackBarError(error.response.data.errors.registro[0]);
               }
             } else {
               this.snackBarError("Error en el registro");

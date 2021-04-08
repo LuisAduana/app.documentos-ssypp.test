@@ -9,7 +9,7 @@ export default {
     menuAdministrador: [
       {
         text: "Coordinadores",
-        icon: "mdi-clock",
+        icon: "mdi-face-profile",
         ruta: "/consulta-coordinadores"
       }
     ],

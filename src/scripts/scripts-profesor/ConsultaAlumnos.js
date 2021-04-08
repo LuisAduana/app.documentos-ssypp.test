@@ -1,4 +1,4 @@
-import tabla from "./../../components/Tabla";
+import Tabla from "./../../components/Tabla";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
@@ -21,6 +21,6 @@ export default {
     ...mapGetters(["getUsuario"])
   },
   components: {
-    tabla
+    Tabla
   }
 };

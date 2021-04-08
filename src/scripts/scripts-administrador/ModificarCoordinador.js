@@ -1,52 +1,35 @@
 import Api from "../../api/Administrador";
-import { mapActions } from "vuex";
+import Rules from "./../Rules";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   data: function() {
     return {
       validacion: true,
+      validacionPassword: true,
       esperandoRespuesta: false,
       mostrarPassword: false,
       mostrarConfirmacionPassword: false,
       password_confirmacion: "",
+      resetPasswordConfirmacion: "",
+      formPassword: {
+        id: this.coordinador.id,
+        password: ""
+      },
       formCoordinador: this.coordinador,
       initCoordinador: this.coordinador,
-      apellido_paternoRules: [
-        v => !!v || "El apellido es requerido",
-        v => (v && v.length <= 45) || "El apellido es demasiado largo"
-      ],
-      apellido_maternoRules: [
-        v => !!v || "El apellido es requerido",
-        v => (v && v.length <= 450) || "El apellido es demasiado larga"
-      ],
-      nombresRules: [
-        v => !!v || "Nombre(s) requerido(s)",
-        v => (v && v.length <= 90) || "Nombre demasiado largo"
-      ],
-      correoRules: [
-        v => !!v || "Correo requerido",
-        v => /.+@.+\..+/.test(v) || "El correo debe ser válido",
-        v => (v && v.length <= 150) || "El correo es demasiado largo"
-      ],
-      passwordRules: [
-        v => !!v || "Contraseña requerida",
-        v => (v && v.length >= 7) || "La contraseña es demasiado corta",
-        v => (v && v.length <= 120) || "La contraseña es demasiado larga"
-      ],
-      num_personalRules: [
-        v => !!v || "No. personal requerido",
-        v => (v && v.length >= 10) || "No. personal incorrecto (corto)",
-        v => (v && v.length <= 10) || "No. personal incorrecto (largo)"
-      ],
-      num_contactoRules: [
-        v => !!v || "Número de contacto requerido",
-        v => (v && v.length >= 10) || "El número es demasiado corto",
-        v => (v && v.length <= 20) || "El número es demasiado largo"
-      ]
+      apellido_paternoRules: Rules.apellido_paternoRules,
+      apellido_maternoRules: Rules.apellido_maternoRules,
+      nombresRules: Rules.nombresRules,
+      correoRules: Rules.correoRules,
+      passwordRules: Rules.passwordRules,
+      num_personalRules: Rules.num_personalRules,
+      num_contactoRules: Rules.num_contactoRules
     };
   },
   methods: {
     ...mapActions(["snackBarError", "snackBarExito"]),
+    ...mapActions("moduloUsuario", ["cambiarPassword"]),
 
     modificarCoordinador() {
       if (this.$refs.formularioCoordinador.validate()) {
@@ -76,6 +59,13 @@ export default {
           });
       }
     },
+    async modificarPassword() {
+      if (this.$refs.formularioPassword.validate()) {
+        if (await this.cambiarPassword(this.formPassword)) {
+          this.$refs.formularioPassword.reset();
+        }
+      }
+    },
     regresar() {
       this.$router.push({ name: "ConsultaCoordinadores" });
     }
@@ -94,5 +84,8 @@ export default {
     if (this.formCoordinador.apellido_paterno === "") {
       this.$router.push({ name: "ConsultaCoordinadores" });
     }
+  },
+  computed: {
+    ...mapGetters(["getEsperandoRespuestaDos"])
   }
 };

@@ -57,7 +57,15 @@
       >
         Cargar
       </v-btn>
-      <v-btn v-else>Hola</v-btn>
+      <v-btn
+        v-else
+        :disabled="!validacion"
+        :loading="getEsperandoRespuesta"
+        text
+        @click.prevent="registrarServicio"
+      >
+        Cargar
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -90,7 +98,12 @@ export default {
       { text: "Autoevaluación del alumno", value: "auto-eval" }
     ],
     archivosServicio: [
-      { text: "Oficio de asignacion", value: "oficio-asignacion" }
+      { text: "Oficio de asignacion", value: "oficio-asignacion" },
+      { text: "Registro y plan de actividades", value: "registro-plan" },
+      { text: "Carta de aceptación", value: "carta-aceptacion" },
+      { text: "Reporte mensual", value: "reporte-mensual" },
+      { text: "Carta de liberación", value: "carta-liberacion" },
+      { text: "Memoria", value: "memoria" }
     ],
     noReporte: "",
     noReporteRules: Rules.noReporteRules,
@@ -105,8 +118,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions("moduloDocumento", ["registrarDocumentoPractica"]),
-    ...mapActions(["saveDialogoDocumento"]),
+    ...mapActions("moduloDocumento", [
+      "registrarDocumentoPractica",
+      "registrarDocumentoServicio"
+    ]),
+    ...mapActions(["saveDialogoDocumento", "saveNuevoItemEnTabla"]),
 
     async registrarPractica() {
       if (!this.formDocumento.documento) {
@@ -124,7 +140,33 @@ export default {
             "proyecto_id",
             this.getInformacionDashboard.proyecto.id
           );
-          if (await this.registrarDocumentoPractica(formData)) {
+          const response = await this.registrarDocumentoPractica(formData);
+          if (response.exito) {
+            this.saveNuevoItemEnTabla(response.response);
+            this.cerrarFormulario();
+          }
+        }
+      }
+    },
+    async registrarServicio() {
+      if (!this.formDocumento.documento) {
+        this.mensajeError = true;
+        this.mensajeValidacion = "Documento requerido.";
+      } else {
+        if (this.$refs.formularioDocumento.validate()) {
+          this.mensajeError = false;
+          var formData = new FormData();
+          formData.append("documento", this.formDocumento.documento);
+          formData.append("tipo", this.formDocumento.tipo + this.noReporte);
+          formData.append("matricula", this.getUsuario.alumno.matricula);
+          formData.append("alumno_id", this.getUsuario.alumno.id);
+          formData.append(
+            "proyecto_id",
+            this.getInformacionDashboard.proyecto.id
+          );
+          const response = await this.registrarDocumentoServicio(formData);
+          if (response.exito) {
+            this.saveNuevoItemEnTabla(response.response);
             this.cerrarFormulario();
           }
         }

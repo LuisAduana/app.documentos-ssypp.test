@@ -285,7 +285,7 @@
                 <v-row>
                   <v-col cols="12" xl="4" lg="4" md="4" sm="4" xs="12">
                     <v-card elevation="0">
-                      <v-card-title> <h5>Opción 1</h5> </v-card-title>
+                      <v-card-title> <h5>Alta prioridad</h5> </v-card-title>
                       <v-text-field
                         v-model="getOpcionUno.nombre_dependencia"
                         dense
@@ -310,7 +310,7 @@
                   </v-col>
                   <v-col cols="12" xl="4" lg="4" md="4" sm="4" xs="12">
                     <v-card elevation="0">
-                      <v-card-title> <h5>Opción 2</h5> </v-card-title>
+                      <v-card-title> <h5>Media prioridad</h5> </v-card-title>
                       <v-text-field
                         v-model="getOpcionDos.nombre_dependencia"
                         dense
@@ -334,7 +334,7 @@
                   </v-col>
                   <v-col cols="12" xl="4" lg="4" md="4" sm="4" xs="12">
                     <v-card elevation="0">
-                      <v-card-title> <h5>Opción 3</h5> </v-card-title>
+                      <v-card-title> <h5>Baja prioridad</h5> </v-card-title>
                       <v-text-field
                         v-model="getOpcionTres.nombre_dependencia"
                         dense

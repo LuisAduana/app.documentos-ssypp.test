@@ -25,5 +25,29 @@ export default {
         "Content-Type": "multipart/form-data"
       }
     });
+  },
+  async registrarDocumentoServicio(formulario) {
+    await Csrf.getCookie();
+    return Api.post("/alumno/registrar-documento-servicio", formulario, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
+  },
+  async modificarDocumentoPractica(formulario) {
+    await Csrf.getCookie();
+    return Api.post("alumno/modificar-documento-practica", formulario, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
+  },
+  async modificarDocumentoServicio(formulario) {
+    await Csrf.getCookie();
+    return Api.post("alumno/modificar-documento-servicio", formulario, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    });
   }
 };

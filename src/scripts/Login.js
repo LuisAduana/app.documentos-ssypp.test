@@ -17,8 +17,17 @@ export default {
 
     async login() {
       if (this.$refs.formularioCredenciales.validate()) {
-        if (await this.loginUsuario(this.formCredenciales)) {
-          this.$router.push({ name: "Dashboard" });
+        const response = await this.loginUsuario(this.formCredenciales);
+        if (response.respuesta) {
+          if (response.rol_usuario === "ALUMNO") {
+            this.$router.push({ name: "ConsultarDocumento" });
+          } else if (response.rol_usuario === "PROFESOR") {
+            this.$router.push({ name: "ConsultaAlumnos" });
+          } else if (response.rol_usuario === "COORDINADOR") {
+            this.$router.push({ name: "ConsultaDependencias" });
+          } else if (response.rol_usuario === "ADMINISTRADOR") {
+            this.$router.push({ name: "ConsultaCoordinadores" });
+          }
         }
       }
     },

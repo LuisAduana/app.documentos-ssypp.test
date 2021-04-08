@@ -1,5 +1,5 @@
-import tabla from "./../../components/Tabla";
-import seleccionar from "./../../components/SeleccionarDocumento";
+import Tabla from "./../../components/Tabla";
+import Seleccionar from "./../../components/SeleccionarDocumento";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
@@ -27,7 +27,7 @@ export default {
     ])
   },
   components: {
-    tabla,
-    seleccionar
+    Tabla,
+    Seleccionar
   }
 };

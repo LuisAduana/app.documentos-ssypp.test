@@ -119,7 +119,7 @@ export default {
   cabecerasDocumentosAlumno: [
     { text: "Nombre", value: "nombre" },
     { text: "Estado", value: "estado" },
-    { text: "Edición", value: "edicion", sortable: false }
+    { text: "Edición", value: "edicion", sortable: false, align: "right" }
   ],
   separarItems(items) {
     var itemsActivos = [];

@@ -78,7 +78,10 @@ export default {
       this.commit("SET_ESPERANDO_RESPUESTA", true, { root: true });
       await Api.modificarAlumnosAsignados(formulario)
         .then(() => {
-          this.dispatch("snackBarExito", Utils.MESSAGE_EXITO_REGISTRO);
+          this.dispatch(
+            "snackBarExito",
+            "¡Los alumnos han sido asignados exitosamente!"
+          );
         })
         .catch(() => {
           this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT);
@@ -164,6 +167,9 @@ export default {
       this.commit("SET_ESPERANDO_TABLA", true, { root: true });
       await ApiProfesor.consultaAlumnos(formulario)
         .then(response => {
+          response.data.forEach(element => {
+            element.esperando = false;
+          });
           this.commit(
             "SET_ITEMS",
             {
