@@ -40,11 +40,6 @@ export default {
         ruta: "/consulta-alumnos-inscritos"
       },
       {
-        text: "Documentos",
-        icon: "mdi-file-multiple",
-        ruta: "/consulta-proyectos-servicioss"
-      },
-      {
         text: "Profesores",
         icon: "mdi-face-profile",
         ruta: "/consulta-profesores"

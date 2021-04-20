@@ -6,7 +6,7 @@
     :items="getItemsEnTabla"
     :search="getBusquedaEnTabla"
     :loading="getEsperandoTabla"
-    :footer-props="{ 'items-per-page-text': 'items por pág.' }"
+    :footer-props="{ 'items-per-page-text': 'Registros por pág.' }"
     loading-text="Cargando... espere porfavor"
   >
     <template v-slot:no-data>No existen registros</template>
@@ -235,6 +235,24 @@
           <span>Descargar</span>
         </v-tooltip>
       </template>
+      <template v-else-if="getTipoTabla == 'alumnos_con_proyectos'">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              @click.prevent="consultarDocumentos(item)"
+              fab
+              x-small
+              elevation="0"
+              v-bind="attrs"
+              v-on="on"
+              :loading="item.esperando"
+            >
+              <v-icon> mdi-file-document-multiple-outline</v-icon>
+            </v-btn>
+          </template>
+          <span>Documentos</span>
+        </v-tooltip>
+      </template>
     </template>
   </v-data-table>
 </template>
@@ -288,6 +306,7 @@ export default {
       "descargarDocumentoPractica",
       "descargarDocumentoServicio",
       "obtenerDocumentosAlumno",
+      "obtenerDocumentosAceptadosAlumno",
       "obtenerMensajes"
     ]),
 
@@ -327,6 +346,25 @@ export default {
         }
         this.saveDialogoAsignarProyecto(true);
       }
+    },
+    async consultarDocumentos(item) {
+      item.esperando = true;
+      const response = await this.obtenerDocumentosAceptadosAlumno(item);
+      if (response.exito) {
+        this.$router.push({
+          name: "DocumentosAceptados",
+          params: {
+            documentos: response.documentos,
+            nombre:
+              item.nombres +
+              " " +
+              item.apellido_paterno +
+              " " +
+              item.apellido_materno
+          }
+        });
+      }
+      item.esperando = false;
     },
     editarItem(item) {
       this.editar(item);

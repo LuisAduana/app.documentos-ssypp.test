@@ -107,15 +107,13 @@ export default {
         .then(response => {
           if (response.data.estado === "ACTIVO") {
             return { respuesta: true, rol_usuario: response.data.rol_usuario };
-          } else if (response.data.estado === "INSCRIPCION") {
+          } else if (
+            response.data.estado === "INSCRIPCION" ||
+            response.data.estado === "ASIGNADO"
+          ) {
             this.dispatch(
               "snackBarInfo",
-              "Actualmente te encuentras en proceso de asignación de proyecto. Inicie sesión más tarde."
-            );
-          } else if (response.data.estado === "ASIGNADO") {
-            this.dispatch(
-              "snackBarInfo",
-              "Actualmente te encuentras en proceso de asignación de profesor. Inicie sesión más tarde."
+              "Actualmente te encuentras en proceso de asignación. Inicie sesión más tarde."
             );
           } else if (response.data.estado === "CANCELADO") {
             this.dispatch(
@@ -177,7 +175,10 @@ export default {
       this.commit("SET_ESPERANDO_RESPUESTA_DOS", true, { root: true });
       const response = await Api.validarExistencia(formulario)
         .then(response => {
-          if (response.data.estado === "INSCRIPCION") {
+          if (
+            response.data.estado === "INSCRIPCION" ||
+            response.data.estado === "ASIGNADO"
+          ) {
             this.dispatch(
               "snackBarError",
               "Ya estás en proceso de asignación de proyecto."
@@ -230,7 +231,7 @@ export default {
         })
         .catch(error => {
           if (error.response.status === 422) {
-            this.dispatch("snackBarError", "No existe una inscripción activa");
+            this.dispatch("snackBarError", "La inscripción ha terminado.");
           } else {
             this.dispatch(
               "snackBarError",

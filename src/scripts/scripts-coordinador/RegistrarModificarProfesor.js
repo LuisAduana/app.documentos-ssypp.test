@@ -38,7 +38,11 @@ export default {
       "modificarAlumnosAsignados"
     ]),
     ...mapActions("moduloUsuario", ["cambiarPassword"]),
-    ...mapActions(["snackBarError", "saveItemsSeleccionados"]),
+    ...mapActions([
+      "snackBarError",
+      "saveItemsSeleccionados",
+      "saveBusquedaEnTabla"
+    ]),
 
     async asignarNuevosAlumnos() {
       if (this.getItemsSeleccionados.length > 0) {
@@ -81,6 +85,11 @@ export default {
       if (this.$refs.formularioProfesor.validate()) {
         await this.modificarProfesor(this.formProfesor);
       }
+    }
+  },
+  watch: {
+    busqueda() {
+      this.saveBusquedaEnTabla(this.busqueda);
     }
   },
   props: {

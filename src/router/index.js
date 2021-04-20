@@ -328,6 +328,25 @@ const routes = [
         }
       },
       {
+        path: "/documentos-aceptados",
+        name: "DocumentosAceptados",
+        props: true,
+        component: () =>
+          import(
+            /* webpackChunkName: "documentos-aceptados" */ "../views/views-coordinador/ConsultaDocumentosAlumno.vue"
+          ),
+        beforeEnter: (to, from, next) => {
+          if (rol() === "COORDINADOR") {
+            next();
+          } else {
+            next({
+              name: "NotFound",
+              query: { redirect: to.fullPath }
+            });
+          }
+        }
+      },
+      {
         path: "/consulta-alumnos",
         name: "ConsultaAlumnos",
         component: () =>

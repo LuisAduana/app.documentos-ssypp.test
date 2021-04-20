@@ -74,6 +74,10 @@ export default {
     await Csrf.getCookie();
     return Api.get("coordinador/obtener-alumnos-inscritos");
   },
+  async obtenerAlumnosConProyecto() {
+    await Csrf.getCookie();
+    return Api.get("coordinador/obtener-alumnos-con-proyecto");
+  },
   async obtenerProyectosSeleccionados(formulario) {
     await Csrf.getCookie();
     return Api.post("coordinador/obtener-proyectos-seleccionador", formulario);
@@ -136,6 +140,13 @@ export default {
     await Csrf.getCookie();
     return Api.post(
       "/coordinador/obtener-responsables-por-dependencia",
+      formulario
+    );
+  },
+  async obtenerDocumentosAceptadosAlumno(formulario) {
+    await Csrf.getCookie();
+    return Api.post(
+      "/coordinador/obtener-documentos-aceptados-alumno",
       formulario
     );
   }

@@ -22,6 +22,16 @@ export default {
     { text: "Sección", value: "seccion" },
     { text: "Proyectos", value: "edicion", sortable: false }
   ],
+  cabecerasAlumnoConProyecto: [
+    { text: "Matrícula", value: "matricula" },
+    { text: "Correo", value: "correo" },
+    { text: "Nombres", value: "nombres" },
+    { text: "Apellido pat.", value: "apellido_paterno" },
+    { text: "Apellido mat.", value: "apellido_materno" },
+    { text: "No. de contácto", value: "num_contacto" },
+    { text: "Sección", value: "seccion" },
+    { text: "Acciones", value: "edicion", sortable: false }
+  ],
   cabecerasAlumnoSeleccion: [
     { text: "Matrícula", value: "matricula" },
     { text: "Nombres", value: "nombres" },

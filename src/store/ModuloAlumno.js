@@ -8,7 +8,8 @@ export default {
     async obtenerAlumnosInscritos() {
       this.commit("SET_CABECERAS", Utils.cabecerasAlumno, { root: true });
       this.commit("SET_ESPERANDO_TABLA", true, { root: true });
-      await Api.obtenerAlumnosInscritos()
+      this.commit("SET_ESPERANDO_RESPUESTA", true, { root: true });
+      const response = await Api.obtenerAlumnosInscritos()
         .then(response => {
           this.commit(
             "SET_ITEMS",
@@ -19,11 +20,50 @@ export default {
             },
             { root: true }
           );
+          return true;
+        })
+        .catch(error => {
+          if (error.response.status === 422) {
+            this.dispatch("snackBarInfo", "No existen alumnos inscritos");
+          } else {
+            this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT);
+          }
+          return false;
+        });
+      this.commit("SET_ESPERANDO_TABLA", false, { root: true });
+      this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });
+      return response;
+    },
+
+    async obtenerAlumnosConProyecto() {
+      this.commit("SET_CABECERAS", Utils.cabecerasAlumnoConProyecto, {
+        root: true
+      });
+      this.commit("SET_ESPERANDO_RESPUESTA", true, { root: true });
+      this.commit("SET_ESPERANDO_TABLA", true, { root: true });
+      const response = await Api.obtenerAlumnosConProyecto()
+        .then(response => {
+          response.data.forEach(element => {
+            element.esperando = false;
+          });
+          this.commit(
+            "SET_ITEMS",
+            {
+              itemsActivos: response.data,
+              itemsInactivos: {},
+              tipoTabla: "alumnos_con_proyectos"
+            },
+            { root: true }
+          );
+          return true;
         })
         .catch(() => {
           this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT_TABLE);
+          return false;
         });
       this.commit("SET_ESPERANDO_TABLA", false, { root: true });
+      this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });
+      return response;
     },
 
     async obtenerInformacionProyecto(context, formulario) {

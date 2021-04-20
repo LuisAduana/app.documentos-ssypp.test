@@ -3,22 +3,44 @@ import { mapActions, mapGetters } from "vuex";
 
 export default {
   data: () => ({
-    busqueda: ""
+    busqueda: "",
+    soloInscritos: false,
+    titulo: "Alumnos asignados"
   }),
   methods: {
     ...mapActions(["saveBusquedaEnTabla"]),
-    ...mapActions("moduloAlumno", ["obtenerAlumnosInscritos"])
+    ...mapActions("moduloAlumno", [
+      "obtenerAlumnosInscritos",
+      "obtenerAlumnosConProyecto"
+    ])
   },
   async mounted() {
-    await this.obtenerAlumnosInscritos();
+    await this.obtenerAlumnosConProyecto();
   },
   watch: {
     busqueda() {
       this.saveBusquedaEnTabla(this.busqueda);
+    },
+    async soloInscritos() {
+      if (this.soloInscritos) {
+        if (await this.obtenerAlumnosInscritos()) {
+          this.soloInscritos = true;
+          this.titulo = "Alumnos sin proyectos";
+        } else {
+          this.soloInscritos = false;
+        }
+      } else {
+        if (await this.obtenerAlumnosConProyecto()) {
+          this.soloInscritos = false;
+          this.titulo = "Alumnos asignados";
+        } else {
+          this.soloInscritos = true;
+        }
+      }
     }
   },
   computed: {
-    ...mapGetters(["getBusquedaEnTabla"])
+    ...mapGetters(["getBusquedaEnTabla", "getEsperandoRespuesta"])
   },
   components: {
     tabla

@@ -1,5 +1,6 @@
 import Api from "./../api/Alumno";
 import ApiProfesor from "./../api/Profesor";
+import ApiCoordinador from "../api/Coordinador";
 import Utils from "./StoreUtils";
 import Download from "downloadjs";
 
@@ -175,6 +176,24 @@ export default {
         .catch(() => {
           this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT);
           return null;
+        });
+    },
+
+    async obtenerDocumentosAceptadosAlumno(context, formulario) {
+      return await ApiCoordinador.obtenerDocumentosAceptadosAlumno(formulario)
+        .then(response => {
+          response.data.forEach(element => {
+            element.esperando = false;
+          });
+          return { exito: true, documentos: response.data };
+        })
+        .catch(error => {
+          if (error.response.status === 422) {
+            this.dispatch("snackBarInfo", "El alumno no tiene documentos.");
+          } else {
+            this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT);
+          }
+          return { exito: false };
         });
     }
   }
