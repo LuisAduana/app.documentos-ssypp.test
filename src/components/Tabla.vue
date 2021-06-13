@@ -328,8 +328,8 @@ export default {
           name: "ConsultaDocumentosAlumno",
           params: { documentos: response.documentos, tipo: response.tipo }
         });
-        item.esperando = false;
       }
+      item.esperando = false;
     },
     async consultarProyectos(item) {
       const response = await this.obtenerProyectosSeleccionados({

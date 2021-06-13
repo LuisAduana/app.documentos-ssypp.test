@@ -78,7 +78,10 @@ export default {
           return true;
         })
         .catch(() => {
-          this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT);
+          this.dispatch(
+            "snackBarError",
+            "Ha ocurrido un error, inténtelo nuevamente"
+          );
           return false;
         });
     },
@@ -102,7 +105,7 @@ export default {
           return { response: response.data, exito: true };
         })
         .catch(error => {
-          if (error.response.status === 422) {
+          if (error.response && error.response.status === 422) {
             this.dispatch(
               "snackBarError",
               error.response.data.errors.documento[0]
@@ -124,7 +127,7 @@ export default {
           return { response: response.data, exito: true };
         })
         .catch(error => {
-          if (error.response.status === 422) {
+          if (error.response && error.response.status === 422) {
             this.dispatch(
               "snackBarError",
               error.response.data.errors.documento[0]
@@ -174,7 +177,10 @@ export default {
           return response.data;
         })
         .catch(() => {
-          this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT);
+          this.dispatch(
+            "snackBarError",
+            "Ha ocurrido un error, inténtelo nuevamente"
+          );
           return null;
         });
     },
@@ -188,7 +194,7 @@ export default {
           return { exito: true, documentos: response.data };
         })
         .catch(error => {
-          if (error.response.status === 422) {
+          if (error.response && error.response.status === 422) {
             this.dispatch("snackBarInfo", "El alumno no tiene documentos.");
           } else {
             this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT);

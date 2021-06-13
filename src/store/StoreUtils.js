@@ -58,11 +58,8 @@ export default {
   cabecerasProyectoServicio: [
     { text: "Dependencia", value: "nombre_dependencia" },
     { text: "Responsable", value: "nombre_responsable" },
-    { text: "No. alumnos", value: "num_alumnos" },
+    { text: "Nombre Proyecto", value: "nombre_proyecto" },
     { text: "Actividades", value: "actividades" },
-    { text: "Direccion", value: "direccion" },
-    { text: "Horario", value: "horario" },
-    { text: "Requisitos", value: "requisitos" },
     { text: "Estado", value: "estado" },
     { text: "Edición", value: "edicion", sortable: false }
   ],

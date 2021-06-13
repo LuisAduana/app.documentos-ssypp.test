@@ -22,7 +22,7 @@ export default {
 
     async modificar() {
       if (this.$refs.formularioResponsable.validate()) {
-        await this.modificarResponsable();
+        await this.modificarResponsable(this.formResponsable);
       }
     },
 

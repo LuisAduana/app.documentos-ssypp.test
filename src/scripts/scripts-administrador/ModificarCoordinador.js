@@ -40,8 +40,7 @@ export default {
             this.snackBarExito("Coordinador modificado exitosamente");
           })
           .catch(error => {
-            this.esperandoRespuesta = false;
-            if (error.response.status === 422) {
+            if (error.response && error.response.status === 422) {
               if (Object.keys(error.response.data.errors).length === 2) {
                 this.snackBarError(error.response.data.errors.correo[0]);
               } else {
@@ -54,8 +53,9 @@ export default {
                 }
               }
             } else {
-              this.snackBarError("Error en la modificación");
+              this.snackBarError("Ha ocurrido un error, inténtalo nuevamente");
             }
+            this.esperandoRespuesta = false;
           });
       }
     },

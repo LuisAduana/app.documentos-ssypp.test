@@ -123,8 +123,18 @@ export default {
           this.dispatch("snackBarExito", Utils.MESSAGE_EXITO_REGISTRO);
           return true;
         })
-        .catch(() => {
-          this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT);
+        .catch(error => {
+          if (error.response && error.response.status < 500) {
+            this.dispatch(
+              "snackBarError",
+              error.response.data.errors.nombre_proyecto[0]
+            );
+          } else {
+            this.dispatch(
+              "snackBarError",
+              "Ha ocurrido un error, inténtelo nuevamente"
+            );
+          }
         });
       this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });
       return response;
@@ -137,8 +147,18 @@ export default {
           this.dispatch("snackBarExito", Utils.MESSAGE_EXITO_REGISTRO);
           return true;
         })
-        .catch(() => {
-          this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT);
+        .catch(error => {
+          if (error.response && error.response.status < 500) {
+            this.dispatch(
+              "snackBarError",
+              error.response.data.errors.nombre_proyecto[0]
+            );
+          } else {
+            this.dispatch(
+              "snackBarError",
+              "Ha ocurrido un error, inténtelo nuevamente"
+            );
+          }
         });
       this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });
       return response;
@@ -150,8 +170,18 @@ export default {
         .then(() => {
           this.dispatch("snackBarExito", Utils.MESSAGE_EXITO_MODIFICAR);
         })
-        .catch(() => {
-          this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT);
+        .catch(error => {
+          if (error.response && error.response.status < 500) {
+            this.dispatch(
+              "snackBarError",
+              error.response.data.errors.nombre_proyecto[0]
+            );
+          } else {
+            this.dispatch(
+              "snackBarError",
+              "Ha ocurrido un error, inténtelo nuevamente"
+            );
+          }
         });
       this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });
     },
@@ -162,8 +192,18 @@ export default {
         .then(() => {
           this.dispatch("snackBarExito", Utils.MESSAGE_EXITO_MODIFICAR);
         })
-        .catch(() => {
-          this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT);
+        .catch(error => {
+          if (error.response && error.response.status < 500) {
+            this.dispatch(
+              "snackBarError",
+              error.response.data.errors.nombre_proyecto[0]
+            );
+          } else {
+            this.dispatch(
+              "snackBarError",
+              "Ha ocurrido un error, inténtelo nuevamente"
+            );
+          }
         });
       this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });
     },

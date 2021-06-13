@@ -58,7 +58,10 @@ export default {
           return true;
         })
         .catch(() => {
-          this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT_TABLE);
+          this.dispatch(
+            "snackBarError",
+            "Ha ocurrido un error, inténtelo nuevamente"
+          );
           return false;
         });
       this.commit("SET_ESPERANDO_TABLA", false, { root: true });
@@ -99,7 +102,7 @@ export default {
           this.dispatch("snackBarExito", Utils.MESSAGE_EXITO_MODIFICAR);
         })
         .catch(error => {
-          if (error.response.status === 422) {
+          if (error.response && error.response.status === 422) {
             if (Object.keys(error.response.data.errors).length === 2) {
               this.dispatch(
                 "snackBarError",
@@ -132,8 +135,18 @@ export default {
           this.dispatch("snackBarExito", "¡Proyecto asignado exitosamente!");
           return true;
         })
-        .catch(() => {
-          this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT);
+        .catch(error => {
+          if (error.response && error.response.status === 422) {
+            this.dispatch(
+              "snackBarError",
+              error.response.data.errors.asignacion[0]
+            );
+          } else {
+            this.dispatch(
+              "mensajeErrores",
+              "Ha ocurrido un error, inténtelo nuevamente"
+            );
+          }
           return false;
         });
       this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });

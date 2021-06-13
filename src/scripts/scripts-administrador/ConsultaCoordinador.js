@@ -45,6 +45,17 @@ export default {
           this.coordinadorEdit.estado === "ACTIVO" ? "INACTIVO" : "ACTIVO",
         correo: this.coordinadorEdit.correo
       };
+      var paso = false;
+      if (datos.estado === "ACTIVO") {
+        this.coordinadores.forEach(element => {
+          if (element.estado === "ACTIVO") {
+            paso = true;
+            this.snackBarError("Ya existe un coorinador activo");
+            return;
+          }
+        });
+      }
+      if (paso) return;
       Administrador.actDesactCoordinador(datos)
         .then(() => {
           for (var i = 0; i < this.coordinadores.length; i++) {

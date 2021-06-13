@@ -124,7 +124,7 @@ export default {
   async mounted() {
     this.initOpciones();
     const response = await this.authUsuario();
-    if (response === 200) {
+    if (response === null || response === 200) {
       this.$router.push({ name: "Dashboard" });
     } else {
       await this.comprobarInscripcion();

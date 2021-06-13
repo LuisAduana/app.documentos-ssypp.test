@@ -9,6 +9,7 @@ export default {
       formProyectoServicio: this.proyecto,
       nombre_responsableRules: Rules.nombre_responsableRules,
       nombre_dependenciaRules: Rules.nombre_dependenciaRules,
+      nombre_proyectoRules: Rules.nombre_proyectoRules,
       actividadesRules: Rules.actividadesRules,
       horarioRules: Rules.horarioRules,
       requisitosRules: Rules.requisitosRules,
@@ -60,6 +61,7 @@ export default {
       default: function() {
         return {
           estado: "ACTIVO",
+          nombre_proyecto: "",
           nombre_responsable: "",
           nombre_dependencia: "",
           num_alumnos: "",

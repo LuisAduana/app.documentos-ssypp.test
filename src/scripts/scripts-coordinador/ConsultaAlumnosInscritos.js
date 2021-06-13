@@ -32,7 +32,7 @@ export default {
       } else {
         if (await this.obtenerAlumnosConProyecto()) {
           this.soloInscritos = false;
-          this.titulo = "Alumnos asignados";
+          this.titulo = "Alumnos inscritos";
         } else {
           this.soloInscritos = true;
         }

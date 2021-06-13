@@ -22,7 +22,10 @@ export default {
         })
         .catch(() => {
           this.commit("SET_ITEMS_EN_TABLA", [], { root: true });
-          this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT_TABLE);
+          this.dispatch(
+            "snackBarError",
+            "No se ha podido cargar la información de la tabla"
+          );
         });
       this.commit("SET_ESPERANDO_TABLA", false, { root: true });
     },
@@ -56,7 +59,10 @@ export default {
           return true;
         })
         .catch(() => {
-          this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT);
+          this.dispatch(
+            "snackBarError",
+            "Ha ocurrido un error, inténtelo nuevamente"
+          );
           return false;
         });
       this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });
@@ -71,7 +77,10 @@ export default {
           return true;
         })
         .catch(() => {
-          this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT);
+          this.dispatch(
+            "snackBarError",
+            "Ha ocurrido un error, inténtelo nuevamente"
+          );
         });
       this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });
       return response;

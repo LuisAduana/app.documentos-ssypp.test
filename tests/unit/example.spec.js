@@ -1,12 +1,18 @@
-import { shallowMount } from "@vue/test-utils";
-import HelloWorld from "@/components/HelloWorld.vue";
+import { mount } from "@vue/test-utils";
+import Vue from "vue";
+import Vuex from "vuex";
 
-describe("HelloWorld.vue", () => {
-  it("renders props.msg when passed", () => {
-    const msg = "new message";
-    const wrapper = shallowMount(HelloWorld, {
-      propsData: { msg }
-    });
-    expect(wrapper.text()).toMatch(msg);
+import componentStore from "./../../src/store/index";
+import component from "./../../src/components/Mensajes";
+
+Vue.use(Vuex);
+const store = new Vuex.Store(component);
+
+test("Cargando test... ", () => {
+  const wrapper = mount(componentStore, {
+    store
   });
+  store.state.busquedaEnTabla = "Hola";
+
+  expect(wrapper.text()).toBe("Hola");
 });

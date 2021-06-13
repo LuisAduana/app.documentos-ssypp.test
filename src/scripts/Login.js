@@ -24,7 +24,7 @@ export default {
           } else if (response.rol_usuario === "PROFESOR") {
             this.$router.push({ name: "ConsultaAlumnos" });
           } else if (response.rol_usuario === "COORDINADOR") {
-            this.$router.push({ name: "ConsultaDependencias" });
+            this.$router.push({ name: "ConsultaAlumnosInscritos" });
           } else if (response.rol_usuario === "ADMINISTRADOR") {
             this.$router.push({ name: "ConsultaCoordinadores" });
           }

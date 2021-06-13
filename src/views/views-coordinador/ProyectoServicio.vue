@@ -58,6 +58,16 @@
             <v-row>
               <v-col>
                 <v-text-field
+                  v-model="formProyectoServicio.nombre_proyecto"
+                  :rules="nombre_proyectoRules"
+                  label="Nombre del proyecto *"
+                  required
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-text-field
                   v-model="formProyectoServicio.actividades"
                   :rules="actividadesRules"
                   label="Actividades *"

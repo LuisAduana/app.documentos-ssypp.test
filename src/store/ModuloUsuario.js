@@ -151,7 +151,7 @@ export default {
           return true;
         })
         .catch(error => {
-          if (error.response.status === 401) {
+          if (error.response && error.response.status === 401) {
             this.dispatch("snackBarError", error.response.data);
           } else {
             this.dispatch(
@@ -189,10 +189,13 @@ export default {
           }
         })
         .catch(error => {
-          if (error.response.status === 401) {
+          if (error.response && error.response.status === 401) {
             this.dispatch("snackBarError", error.response.data);
           } else {
-            this.dispatch("snackBarError", Utils.MESSAGE_ERROR_DEFAULT);
+            this.dispatch(
+              "snackBarError",
+              "Ha ocurrido un error, inténtelo nuevamente"
+            );
           }
           return { datos: {}, fallo: false };
         });
@@ -230,15 +233,16 @@ export default {
           );
         })
         .catch(error => {
-          if (error.response.status === 422) {
+          if (error.response && error.response.status === 422) {
             this.dispatch("snackBarError", "La inscripción ha terminado.");
+            return error.response;
           } else {
             this.dispatch(
               "snackBarError",
               "No se pudieron obtener los proyectos. Vuelva a cargar la página."
             );
+            return null;
           }
-          return error.response;
         });
     },
 
@@ -285,7 +289,10 @@ export default {
           return true;
         })
         .catch(() => {
-          this.dispatch("snackBarError", "No se pudo cambiar la contraseña");
+          this.dispatch(
+            "snackBarError",
+            "Ha ocurrido un error, inténtelo nuevamente"
+          );
           return false;
         });
       this.commit("SET_ESPERANDO_RESPUESTA_DOS", false, { root: true });
@@ -299,11 +306,19 @@ export default {
           return response;
         })
         .catch(error => {
-          this.dispatch(
-            "snackBarError",
-            "No se pudo cerrar sesión, inténtelo de nuevo"
-          );
-          return error.response;
+          if (error.response) {
+            this.dispatch(
+              "snackBarError",
+              "No se pudo cerrar sesión, inténtelo de nuevo"
+            );
+            return error.response;
+          } else {
+            this.dispatch(
+              "snackBarError",
+              "Ha ocurrido un error, inténtelo de nuevo"
+            );
+            return null;
+          }
         });
       return response;
     },

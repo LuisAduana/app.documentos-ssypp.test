@@ -80,7 +80,7 @@ export default {
 
     async logout() {
       const response = await this.logoutUsuario();
-      if (response.status === 200) {
+      if (response != null && response.status === 200) {
         this.$router.push({ name: "Login" });
       }
     },

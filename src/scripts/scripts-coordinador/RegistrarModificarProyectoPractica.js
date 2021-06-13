@@ -1,4 +1,4 @@
-import Coordinador from "../../api/Coordinador";
+// import Coordinador from "../../api/Coordinador";
 import Rules from "./../Rules";
 import { mapActions, mapGetters } from "vuex";
 
@@ -24,7 +24,10 @@ export default {
   },
   methods: {
     ...mapActions("moduloDependencia", ["obtenerNombresDependencias"]),
-    ...mapActions("moduloProyectos", ["registrarProyectoPractica"]),
+    ...mapActions("moduloProyectos", [
+      "registrarProyectoPractica",
+      "modificarProyectoPractica"
+    ]),
     ...mapActions("moduloResponsable", ["obtenerNombresResponsables"]),
     ...mapActions(["snackBarError", "snackBarExito", "snackBarInfo"]),
 
@@ -36,7 +39,13 @@ export default {
       }
     },
 
-    modificar() {
+    async modificar() {
+      if (this.$refs.formularioProyectoPractica.validate()) {
+        await this.modificarProyectoPractica(this.formProyectoPractica);
+      }
+    },
+
+    /*modificar() {
       if (this.$refs.formularioProyectoPractica.validate()) {
         this.esperandoRespuesta = true;
         Coordinador.modificarProyectoPractica(this.formProyectoPractica)
@@ -53,8 +62,10 @@ export default {
           .finally(() => {
             this.esperandoRespuesta = false;
           });
+      } else {
+        console.log("No PASO");
       }
-    },
+    },*/
 
     regresar() {
       this.$router.back();
@@ -64,6 +75,11 @@ export default {
     await this.obtenerNombresDependencias();
     if (!this.proyecto.registro_proyecto) {
       await this.obtenerNombresResponsables(this.nombre_dependencia);
+    }
+    for (const property in this.proyecto) {
+      if (this.proyecto[property] == null) {
+        this.proyecto[property] = "";
+      }
     }
   },
   watch: {

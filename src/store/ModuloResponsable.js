@@ -93,7 +93,7 @@ export default {
       return response;
     },
 
-    async registrarResponsable({ dispatch }, formulario) {
+    async registrarResponsable(context, formulario) {
       this.commit("SET_ESPERANDO_RESPUESTA", true, { root: true });
       const response = await Api.registrarResponsable(formulario)
         .then(() => {
@@ -101,21 +101,69 @@ export default {
           return true;
         })
         .catch(error => {
-          dispatch("mensajeErrores", error.response);
+          if (error.response && error.response.status === 422) {
+            if (Object.keys(error.response.data.errors).length === 2) {
+              this.dispatch(
+                "snackBarError",
+                error.response.data.errors.correo[0]
+              );
+            } else {
+              if (error.response.data.errors.correo == null) {
+                this.dispatch(
+                  "snackBarError",
+                  error.response.data.errors.nombre_responsable[0]
+                );
+              } else {
+                this.dispatch(
+                  "snackBarError",
+                  error.response.data.errors.correo[0]
+                );
+              }
+            }
+          } else {
+            this.dispatch(
+              "snackBarError",
+              "Ha ocurrido un error, inténtelo nuevamente."
+            );
+          }
           return false;
         });
       this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });
       return response;
     },
 
-    async modificarResponsable({ dispatch }, formulario) {
+    async modificarResponsable(context, formulario) {
       this.commit("SET_ESPERANDO_RESPUESTA", true, { root: true });
       await Api.modificarResponsable(formulario)
         .then(() => {
           this.dispatch("snackBarExito", Utils.MESSAGE_EXITO_MODIFICAR);
         })
         .catch(error => {
-          dispatch("mensajeErrores", error.response);
+          if (error.response && error.response.status === 422) {
+            if (Object.keys(error.response.data.errors).length === 2) {
+              this.dispatch(
+                "snackBarError",
+                error.response.data.errors.correo[0]
+              );
+            } else {
+              if (error.response.data.errors.correo == null) {
+                this.dispatch(
+                  "snackBarError",
+                  error.response.data.errors.nombre_responsable[0]
+                );
+              } else {
+                this.dispatch(
+                  "snackBarError",
+                  error.response.data.errors.correo[0]
+                );
+              }
+            }
+          } else {
+            this.dispatch(
+              "snackBarError",
+              "Ha ocurrido un error, inténtelo nuevamente."
+            );
+          }
         });
       this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });
     },

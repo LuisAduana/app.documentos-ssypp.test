@@ -83,7 +83,7 @@
                   :disabled="!validacion"
                   :loading="getEsperandoRespuesta"
                   color="success"
-                  @click.prevent="registrar()"
+                  @click.prevent="registrar"
                 >
                   Registrar
                 </v-btn>
@@ -92,7 +92,7 @@
                   :disabled="!validacion"
                   :loading="getEsperandoRespuesta"
                   color="success"
-                  @click.prevent="modificarResponsable()"
+                  @click.prevent="modificar"
                 >
                   Modificar
                 </v-btn>

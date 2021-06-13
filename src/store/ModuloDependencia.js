@@ -58,10 +58,20 @@ export default {
       this.commit("SET_ESPERANDO_RESPUESTA", true, { root: true });
       await Api.modificarDependencia(formulario)
         .then(() => {
-          this.dispatch("snackBarExito", Utils.MESSAGE_EXITO_MODIFICAR);
+          this.dispatch(
+            "snackBarExito",
+            "¡Dependencia modificada exitosamente!"
+          );
         })
         .catch(error => {
-          dispatch("mensajeErrores", error.response);
+          if (error.response) {
+            dispatch("mensajeErrores", error.response);
+          } else {
+            dispatch(
+              "mensajeErrores",
+              "Ha ocurrido un error, inténtelo nuevamente"
+            );
+          }
         });
       this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });
     },
@@ -91,11 +101,21 @@ export default {
       this.commit("SET_ESPERANDO_RESPUESTA", true, { root: true });
       const response = await Api.registrarDependencia(formulario)
         .then(() => {
-          this.dispatch("snackBarExito", Utils.MESSAGE_EXITO_REGISTRO);
+          this.dispatch(
+            "snackBarExito",
+            "¡Dependencia registrada exitosamente!"
+          );
           return true;
         })
         .catch(error => {
-          dispatch("mensajeErrores", error.response);
+          if (error.response) {
+            dispatch("mensajeErrores", error.response);
+          } else {
+            dispatch(
+              "mensajeErrores",
+              "Ha ocurrido un error, inténtelo nuevamente"
+            );
+          }
           return false;
         });
       this.commit("SET_ESPERANDO_RESPUESTA", false, { root: true });

@@ -66,7 +66,7 @@ export default {
           })
           .catch(error => {
             this.esperandoRespuesta = false;
-            if (error.response.status === 422) {
+            if (error.response && error.response.status === 422) {
               if (Object.keys(error.response.data.errors).length === 2) {
                 this.snackBarError(error.response.data.errors.correo[0]);
               } else if (error.response.data.errors.registro == null) {
@@ -81,7 +81,7 @@ export default {
                 this.snackBarError(error.response.data.errors.registro[0]);
               }
             } else {
-              this.snackBarError("Error en el registro");
+              this.snackBarError("Ha ocurrido un error, inténtelo nuevamente");
             }
           });
       }
