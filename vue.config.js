@@ -1,6 +1,6 @@
 module.exports = {
   devServer: {
-    host: "app.documentos-ssypp.test"
+    host: "documentos.ssypp.mx"
   },
   transpileDependencies: ["vuetify"]
 };
